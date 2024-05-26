@@ -27,7 +27,7 @@ function setLanguage(language) {
 }
 
 function fetchAttendanceData() {
-    fetch('https://<YOUR_GITHUB_USERNAME>.github.io/<YOUR_REPO_NAME>/data/employees.json')
+    fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees)
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById('attendance-container');
