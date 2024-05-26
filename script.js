@@ -27,7 +27,7 @@ function setLanguage(language) {
 }
 
 function fetchAttendanceData() {
-    fetch('data/employees.json')
+    fetch('https://<YOUR_GITHUB_USERNAME>.github.io/<YOUR_REPO_NAME>/data/employees.json')
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById('attendance-container');
