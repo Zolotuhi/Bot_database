@@ -26,39 +26,38 @@ function setLanguage(language) {
     fetchAttendanceData();
 }
 
-function fetchAttendanceData() {
-    fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev/api/employees')
-        .then(response => response.json())
-        .then(data => {
-            const container = document.getElementById('attendance-container');
-            container.innerHTML = '';
+fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev/api/employees')
+    .then(response => response.json())
+    .then(data => {
+        const container = document.getElementById('attendance-container');
+        container.innerHTML = '';
 
-            const table = document.createElement('table');
-            const thead = document.createElement('thead');
-            const tbody = document.createElement('tbody');
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const tbody = document.createElement('tbody');
 
-            thead.innerHTML = `
-                <tr>
-                    <th>${translations[currentLanguage].username}</th>
-                    <th>${translations[currentLanguage].arrivalTime}</th>
-                    <th>${translations[currentLanguage].departureTime}</th>
-                </tr>
+        thead.innerHTML = `
+            <tr>
+                <th>${translations[currentLanguage].username}</th>
+                <th>${translations[currentLanguage].arrivalTime}</th>
+                <th>${translations[currentLanguage].departureTime}</th>
+            </tr>
+        `;
+
+        data.forEach(employee => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${employee.username}</td>
+                <td>${employee.arrival_time}</td>
+                <td>${employee.departure_time}</td>
             `;
+            tbody.appendChild(row);
+        });
 
-            data.forEach(employee => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${employee.username}</td>
-                    <td>${employee.arrival_time}</td>
-                    <td>${employee.departure_time}</td>
-                `;
-                tbody.appendChild(row);
-            });
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        container.appendChild(table);
+    })
+    .catch(error => console.error('Error fetching attendance data:', error));
 
-            table.appendChild(thead);
-            table.appendChild(tbody);
-            container.appendChild(table);
-        })
-        .catch(error => console.error('Error fetching attendance data:', error));
-}
 
