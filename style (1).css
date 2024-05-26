@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+}
+
+h1 {
+    text-align: center;
+    color: #fff;
+}
+
+#language-selector {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#language-selector button {
+    margin: 0 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+}
+
+#language-selector button:hover {
+    background-color: #ddd;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: #444;
+}
+
+th, td {
+    border: 1px solid #fff;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
