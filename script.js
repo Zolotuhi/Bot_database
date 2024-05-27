@@ -7,12 +7,9 @@ const translations = {
         edit: "Edit",
         editEmployee: "Edit Employee",
         save: "Save",
-        sendLocation: "Send Location",
-        changeLanguage: "Change Language",
-        reportEmergency: "Report Emergency",
-        helpCommand: "Help",
-        viewDatabase: "View Database",
-        notAuthorized: "You are not authorized to view the database."
+        present: "Present",
+        latitude: "Latitude",
+        longitude: "Longitude",
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -22,12 +19,9 @@ const translations = {
         edit: "Редактировать",
         editEmployee: "Редактировать сотрудника",
         save: "Сохранить",
-        sendLocation: "Отправить местоположение",
-        changeLanguage: "Изменить язык",
-        reportEmergency: "Сообщить о ЧС",
-        helpCommand: "Помощь",
-        viewDatabase: "Просмотр базы данных",
-        notAuthorized: "Вы не авторизованы для просмотра базы данных."
+        present: "Присутствие",
+        latitude: "Широта",
+        longitude: "Долгота",
     }
 };
 
@@ -44,9 +38,9 @@ function setLanguage(language) {
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
     document.querySelector('label[for="edit-username"]').textContent = translations[language].username + ":";
-    document.querySelector('label[for="edit-present"]').textContent = translations[language].sendLocation + ":";
-    document.querySelector('label[for="edit-location-lat"]').textContent = "Latitude" + ":";
-    document.querySelector('label[for="edit-location-lon"]').textContent = "Longitude" + ":";
+    document.querySelector('label[for="edit-present"]').textContent = translations[language].present + ":";
+    document.querySelector('label[for="edit-location-lat"]').textContent = translations[language].latitude + ":";
+    document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
     document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
     document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
     fetchAttendanceData();
@@ -105,29 +99,46 @@ function saveEdit() {
     const userId = document.getElementById('edit-user-id').value;
     const username = document.getElementById('edit-username').value;
     const present = document.getElementById('edit-present').checked;
-    const lat = document.getElementById('edit-location-lat').value;
-    const lon = document.getElementById('edit-location-lon').value;
+    const lat = parseFloat(document.getElementById('edit-location-lat').value);
+    const lon = parseFloat(document.getElementById('edit-location-lon').value);
     const arrivalTime = document.getElementById('edit-arrival-time').value;
     const departureTime = document.getElementById('edit-departure-time').value;
+
+    if (isNaN(lat) || isNaN(lon)) {
+        alert("Latitude and Longitude must be valid numbers.");
+        return;
+    }
+
+    const data = {
+        username: username,
+        present: present,
+        location_lat: lat,
+        location_lon: lon,
+        arrival_time: arrivalTime,
+        departure_time: departureTime
+    };
 
     fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            username: username,
-            present: present,
-            location_lat: parseFloat(lat),
-            location_lon: parseFloat(lon),
-            arrival_time: arrivalTime,
-            departure_time: departureTime
-        })
+        body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(`Server error: ${err.detail}`);
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         document.getElementById('edit-form-container').style.display = 'none';
         fetchAttendanceData();
     })
-    .catch(error => console.error('Error updating employee data:', error));
+    .catch(error => {
+        console.error('Error updating employee data:', error);
+        alert(`Error updating employee data: ${error.message}`);
+    });
 }
