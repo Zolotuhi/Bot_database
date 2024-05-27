@@ -1,14 +1,16 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #333;
-    color: #fff;
+    background-color: #2c3e50;
+    color: #ecf0f1;
 }
 
 h1 {
     text-align: center;
-    color: #fff;
+    color: #ecf0f1;
+    font-size: 2.5em;
+    margin-bottom: 20px;
 }
 
 #language-selector {
@@ -21,30 +23,107 @@ h1 {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #fff;
-    color: #333;
+    background-color: #3498db;
+    color: #fff;
     border: none;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
 #language-selector button:hover {
-    background-color: #ddd;
+    background-color: #2980b9;
+}
+
+#attendance-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow-x: auto;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    background-color: #444;
+    background-color: #34495e;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
-    border: 1px solid #fff;
-    padding: 8px;
+    padding: 12px 15px;
     text-align: left;
+    color: #ecf0f1;
 }
 
 th {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #2980b9;
+    font-weight: bold;
+}
+
+td {
+    border-bottom: 1px solid #2c3e50;
+}
+
+tr:hover {
+    background-color: #3d566e;
+}
+
+button {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #c0392b;
+}
+
+#edit-form-container {
+    display: none;
+    background-color: #34495e;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 20px auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#edit-form h2 {
+    margin-top: 0;
+    color: #ecf0f1;
+}
+
+#edit-form label {
+    display: block;
+    margin: 10px 0 5px;
+    color: #ecf0f1;
+}
+
+#edit-form input[type="text"],
+#edit-form input[type="checkbox"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+#edit-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#edit-form button:hover {
+    background-color: #2ecc71;
 }
