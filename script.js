@@ -6,6 +6,13 @@ const translations = {
         departureTime: "Departure Time",
         edit: "Edit",
         editEmployee: "Edit Employee",
+        save: "Save",
+        sendLocation: "Send Location",
+        changeLanguage: "Change Language",
+        reportEmergency: "Report Emergency",
+        helpCommand: "Help",
+        viewDatabase: "View Database",
+        notAuthorized: "You are not authorized to view the database."
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -14,6 +21,13 @@ const translations = {
         departureTime: "Время ухода",
         edit: "Редактировать",
         editEmployee: "Редактировать сотрудника",
+        save: "Сохранить",
+        sendLocation: "Отправить местоположение",
+        changeLanguage: "Изменить язык",
+        reportEmergency: "Сообщить о ЧС",
+        helpCommand: "Помощь",
+        viewDatabase: "Просмотр базы данных",
+        notAuthorized: "Вы не авторизованы для просмотра базы данных."
     }
 };
 
@@ -27,6 +41,8 @@ document.addEventListener("DOMContentLoaded", function() {
 function setLanguage(language) {
     currentLanguage = language;
     document.querySelector('h1').textContent = translations[language].title;
+    document.getElementById('edit-title').textContent = translations[language].editEmployee;
+    document.getElementById('save-button').textContent = translations[language].save;
     fetchAttendanceData();
 }
 
