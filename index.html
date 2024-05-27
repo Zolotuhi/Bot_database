@@ -13,6 +13,25 @@
         <button onclick="setLanguage('ru')">Русский</button>
     </div>
     <div id="attendance-container"></div>
+    <div id="edit-form-container" style="display:none;">
+        <h2>Edit Employee</h2>
+        <form id="edit-form">
+            <input type="hidden" id="edit-user-id">
+            <label for="edit-username">Username:</label>
+            <input type="text" id="edit-username"><br>
+            <label for="edit-present">Present:</label>
+            <input type="checkbox" id="edit-present"><br>
+            <label for="edit-location-lat">Location Latitude:</label>
+            <input type="text" id="edit-location-lat"><br>
+            <label for="edit-location-lon">Location Longitude:</label>
+            <input type="text" id="edit-location-lon"><br>
+            <label for="edit-arrival-time">Arrival Time:</label>
+            <input type="text" id="edit-arrival-time"><br>
+            <label for="edit-departure-time">Departure Time:</label>
+            <input type="text" id="edit-departure-time"><br>
+            <button type="button" onclick="saveEdit()">Save</button>
+        </form>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
