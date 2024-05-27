@@ -43,6 +43,12 @@ function setLanguage(language) {
     document.querySelector('h1').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
+    document.querySelector('label[for="edit-username"]').textContent = translations[language].username + ":";
+    document.querySelector('label[for="edit-present"]').textContent = translations[language].sendLocation + ":";
+    document.querySelector('label[for="edit-location-lat"]').textContent = "Latitude" + ":";
+    document.querySelector('label[for="edit-location-lon"]').textContent = "Longitude" + ":";
+    document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
+    document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
     fetchAttendanceData();
 }
 
