@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Tracker</title>
+    <title>Трекер Посещаемости</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div id="login-container">
-        <h1>Attendance Tracker</h1>
+        <h1>Трекер Посещаемости</h1>
         <form id="login-form">
-            <label for="username">Username:</label>
+            <label for="username">Имя пользователя:</label>
             <input type="text" id="username" name="username" required>
 
-            <label for="password">Password:</label>
+            <label for="password">Пароль:</label>
             <div class="password-container">
                 <input type="password" id="password" name="password" required>
                 <span class="eye-icon" onclick="togglePasswordVisibility()">
@@ -24,49 +24,47 @@
 
             <div class="remember-me-container">
                 <input type="checkbox" id="remember-me" name="remember-me">
-                <label for="remember-me">Remember me</label>
+                <label for="remember-me">Запомнить меня</label>
             </div>
 
-            <button type="button" onclick="login()">Login</button>
-            <div id="language-selector">
-                <button type="button" onclick="setLanguage('en')">English</button>
-                <button type="button" onclick="setLanguage('ru')">Русский</button>
-            </div>
+            <button type="button" onclick="login()">Войти</button>
         </form>
     </div>
 
     <div id="attendance-container" style="display: none;">
-        <h1>Attendance Tracker</h1>
+        <h1>Трекер Посещаемости</h1>
         <div class="slider-container">
-            <label class="switch">
-                <input type="checkbox" id="language-slider" onchange="updateLanguageSlider(this.checked)">
-                <span class="slider round"></span>
-            </label>
-            <span id="language-slider-label">English</span>
+            <div class="dropdown">
+                <button class="dropbtn"><i class="fas fa-globe"></i></button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="setLanguage('en')">English</a>
+                    <a href="#" onclick="setLanguage('ru')">Русский</a>
+                </div>
+            </div>
         </div>
         <div id="search-container">
-            <input type="text" id="search-input" placeholder="Search...">
-            <button onclick="search()">Search</button>
+            <input type="text" id="search-input" placeholder="Поиск...">
+            <button onclick="search()">Поиск</button>
         </div>
         <div id="attendance-table-container"></div>
 
         <div id="edit-form-container" style="display: none;">
-            <h2 id="edit-title">Edit Employee</h2>
+            <h2 id="edit-title">Редактировать сотрудника</h2>
             <form id="edit-form">
                 <input type="hidden" id="edit-user-id">
-                <label for="edit-username">Username:</label>
+                <label for="edit-username">Имя пользователя:</label>
                 <input type="text" id="edit-username"><br>
-                <label for="edit-present">Present:</label>
+                <label for="edit-present">Присутствие:</label>
                 <input type="checkbox" id="edit-present"><br>
-                <label for="edit-location-lat">Latitude:</label>
+                <label for="edit-location-lat">Широта:</label>
                 <input type="number" id="edit-location-lat" step="0.000001"><br>
-                <label for="edit-location-lon">Longitude:</label>
+                <label for="edit-location-lon">Долгота:</label>
                 <input type="number" id="edit-location-lon" step="0.000001"><br>
-                <label for="edit-arrival-time">Arrival Time:</label>
+                <label for="edit-arrival-time">Время прибытия:</label>
                 <input type="text" id="edit-arrival-time"><br>
-                <label for="edit-departure-time">Departure Time:</label>
+                <label for="edit-departure-time">Время отбытия:</label>
                 <input type="text" id="edit-departure-time"><br>
-                <button type="button" id="save-button" onclick="saveEdit()">Save</button>
+                <button type="button" id="save-button" onclick="saveEdit()">Сохранить</button>
             </form>
         </div>
     </div>
