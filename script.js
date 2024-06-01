@@ -12,7 +12,8 @@ const translations = {
         longitude: "Longitude",
         search: "Search",
         login: "Login",
-        password: "Password"
+        password: "Password",
+        rememberMe: "Remember me",
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -27,7 +28,8 @@ const translations = {
         longitude: "Долгота",
         search: "Поиск",
         login: "Логин",
-        password: "Пароль"
+        password: "Пароль",
+        rememberMe: "Запомнить меня",
     }
 };
 
@@ -51,6 +53,9 @@ function setLanguage(language) {
     document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
     document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
     document.querySelector('label[for="search-input"]').textContent = translations[language].search + ":";
+    document.querySelector('label[for="username"]').textContent = translations[language].username + ":";
+    document.querySelector('label[for="password"]').textContent = translations[language].password + ":";
+    document.querySelector('label[for="remember-me"]').textContent = translations[language].rememberMe;
 }
 
 function checkLogin() {
@@ -74,6 +79,12 @@ function login() {
     } else {
         alert("Invalid credentials");
     }
+}
+
+function togglePassword() {
+    const passwordField = document.getElementById('password');
+    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordField.setAttribute('type', type);
 }
 
 function fetchAttendanceData() {
