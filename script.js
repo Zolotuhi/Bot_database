@@ -22,26 +22,9 @@ const translations = {
         latitude: "Latitude",
         longitude: "Longitude",
         search: "Search...",
-        sendLocation: "Send Location",
-        changeLanguage: "Change Language",
-        reportEmergency: "Report Emergency",
-        helpCommand: "Help",
-        viewDatabase: "View Database",
-        notAuthorized: "You are not authorized to view the database.",
-        presenceMessage: "Employee @{username} (ID: {user_id}) is at the workplace.",
-        absenceMessage: "Employee @{username} (ID: {user_id}) has left the workplace.",
-        chooseLanguage: "Please choose your language:",
-        languageSet: "Language has been set to English.",
-        languageNotSupported: "Language not supported. Please choose en, ru, or kz.",
-        provideLanguageCode: "Please provide a language code (en, ru, kz).",
-        helpMessage: `
-            /start - Start interacting with the bot
-            /help - Show this help message
-            /language - Choose language
-            /create_event - Create a new event in the calendar
-            /attendance_report - Send attendance report
-            /add_absence - Add an absence
-        `
+        arrivalTime: "Arrival Time",
+        departureTime: "Departure Time",
+        edit: "Edit"
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -55,26 +38,9 @@ const translations = {
         latitude: "Широта",
         longitude: "Долгота",
         search: "Поиск...",
-        sendLocation: "Отправить местоположение",
-        changeLanguage: "Изменить язык",
-        reportEmergency: "Сообщить о ЧС",
-        helpCommand: "Помощь",
-        viewDatabase: "Просмотр базы данных",
-        notAuthorized: "Вы не авторизованы для просмотра базы данных.",
-        presenceMessage: "Сотрудник @{username} (ID: {user_id}) на рабочем месте.",
-        absenceMessage: "Сотрудник @{username} (ID: {user_id}) покинул рабочее место.",
-        chooseLanguage: "Пожалуйста, выберите язык:",
-        languageSet: "Язык был установлен на русский.",
-        languageNotSupported: "Язык не поддерживается. Пожалуйста, выберите en, ru или kz.",
-        provideLanguageCode: "Пожалуйста, укажите код языка (en, ru, kz).",
-        helpMessage: `
-            /start - Начать взаимодействие с ботом
-            /help - Показать это сообщение помощи
-            /language - Выбрать язык
-            /create_event - Создать новое событие в календаре
-            /attendance_report - Отправить отчет о посещаемости
-            /add_absence - Добавить отсутствие
-        `
+        arrivalTime: "Время прибытия",
+        departureTime: "Время отбытия",
+        edit: "Редактировать"
     }
 };
 
@@ -97,6 +63,12 @@ function setLanguage(language) {
     document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
     document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
     document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
+}
+
+function updateLanguageSlider(value) {
+    const language = value == 0 ? 'en' : 'ru';
+    setLanguage(language);
+    document.getElementById('language-slider-label').textContent = language === 'en' ? 'English' : 'Русский';
 }
 
 function togglePasswordVisibility() {
@@ -152,17 +124,17 @@ function fetchAttendanceData() {
                     <th>${translations[currentLanguage].username}</th>
                     <th>${translations[currentLanguage].arrivalTime}</th>
                     <th>${translations[currentLanguage].departureTime}</th>
-                    <th>Edit</th>
+                    <th>${translations[currentLanguage].edit}</th>
                 </tr>
             `;
 
             data.forEach(employee => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${employee[1]}</td>
-                    <td>${employee[5]}</td>
-                    <td>${employee[6]}</td>
-                    <td><button onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">Edit</button></td>
+                    <td>${employee.username || ''}</td>
+                    <td>${employee.arrival_time || ''}</td>
+                    <td>${employee.departure_time || ''}</td>
+                    <td><button onclick="editEmployee('${employee.id}', '${employee.username}', ${employee.present}, ${employee.location_lat}, ${employee.location_lon}, '${employee.arrival_time}', '${employee.departure_time}')">${translations[currentLanguage].edit}</button></td>
                 `;
                 tbody.appendChild(row);
             });
@@ -176,12 +148,12 @@ function fetchAttendanceData() {
 
 function editEmployee(userId, username, present, lat, lon, arrivalTime, departureTime) {
     document.getElementById('edit-user-id').value = userId;
-    document.getElementById('edit-username').value = username;
-    document.getElementById('edit-present').checked = present;
-    document.getElementById('edit-location-lat').value = lat;
-    document.getElementById('edit-location-lon').value = lon;
-    document.getElementById('edit-arrival-time').value = arrivalTime;
-    document.getElementById('edit-departure-time').value = departureTime;
+    document.getElementById('edit-username').value = username || '';
+    document.getElementById('edit-present').checked = present || false;
+    document.getElementById('edit-location-lat').value = lat || '';
+    document.getElementById('edit-location-lon').value = lon || '';
+    document.getElementById('edit-arrival-time').value = arrivalTime || '';
+    document.getElementById('edit-departure-time').value = departureTime || '';
     document.getElementById('edit-form-container').style.display = 'block';
 }
 
