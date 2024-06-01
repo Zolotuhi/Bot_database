@@ -83,7 +83,7 @@ function displayAttendanceData(data) {
             <td>${employee[1]}</td>
             <td>${employee[5]}</td>
             <td>${employee[6]}</td>
-            <td><button onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
+            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
         `;
         tbody.appendChild(row);
     });
