@@ -19,8 +19,12 @@ h1 {
     background-color: #34495e;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+}
+
+#login-container h1 {
+    margin-bottom: 20px;
 }
 
 #login-container label {
@@ -38,27 +42,16 @@ h1 {
     border-radius: 5px;
 }
 
-#login-container .password-container {
+.password-container {
     position: relative;
 }
 
-#login-container .eye-icon {
+.password-container .eye-icon {
     position: absolute;
-    top: 50%;
     right: 10px;
+    top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-}
-
-#login-container .remember-me-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-
-#login-container .remember-me-container input[type="checkbox"] {
-    margin-right: 5px;
 }
 
 #login-container button {
@@ -76,22 +69,24 @@ h1 {
     background-color: #2ecc71;
 }
 
-#language-selector {
-    margin-top: 20px;
+.remember-me-container {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-bottom: 10px;
 }
 
-#language-selector button {
-    margin: 0 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
+.remember-me-label {
+    margin-left: 5px;
+    color: #ecf0f1;
+}
+
+#login-container button:last-child {
+    margin-top: 10px;
     background-color: #3498db;
-    color: #fff;
     border: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
 }
 
-#language-selector button:hover {
+#login-container button:last-child:hover {
     background-color: #2980b9;
 }
