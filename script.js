@@ -2,9 +2,9 @@ const translations = {
     en: {
         title: "Attendance Tracker",
         username: "Username",
-        arrivalTime: "Arrival Time",
-        departureTime: "Departure Time",
-        edit: "Edit",
+        password: "Password",
+        rememberMe: "Remember me",
+        login: "Login",
         editEmployee: "Edit Employee",
         save: "Save",
         present: "Present",
@@ -15,9 +15,9 @@ const translations = {
     ru: {
         title: "Трекер Посещаемости",
         username: "Имя пользователя",
-        arrivalTime: "Время прибытия",
-        departureTime: "Время ухода",
-        edit: "Редактировать",
+        password: "Пароль",
+        rememberMe: "Запомнить меня",
+        login: "Войти",
         editEmployee: "Редактировать сотрудника",
         save: "Сохранить",
         present: "Присутствие",
@@ -27,12 +27,17 @@ const translations = {
     }
 };
 
-let currentLanguage = 'ru';
+let currentLanguage = 'en';
 let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn) {
+        showAttendanceTracker();
+    } else {
+        document.getElementById('login-container').style.display = 'block';
+    }
     setLanguage(currentLanguage);
-    fetchAttendanceData();
 });
 
 function setLanguage(language) {
@@ -47,6 +52,47 @@ function setLanguage(language) {
     document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
     document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
     document.querySelector('label[for="search-input"]').textContent = translations[language].search + ":";
+    document.querySelector('label[for="username"]').textContent = translations[language].username + ":";
+    document.querySelector('label[for="password"]').textContent = translations[language].password + ":";
+    document.querySelector('label[for="remember-me"]').textContent = translations[language].rememberMe;
+    document.querySelector('button[onclick="login()"]').textContent = translations[language].login;
+    fetchAttendanceData();
+}
+
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById("password");
+    const eyeIcon = document.querySelector(".eye-icon i");
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        eyeIcon.classList.remove("fa-eye");
+        eyeIcon.classList.add("fa-eye-slash");
+    } else {
+        passwordInput.type = "password";
+        eyeIcon.classList.remove("fa-eye-slash");
+        eyeIcon.classList.add("fa-eye");
+    }
+}
+
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const rememberMe = document.getElementById('remember-me').checked;
+
+    // Пример проверки логина и пароля
+    if (username === 'admin' && password === 'password') {
+        if (rememberMe) {
+            localStorage.setItem('isLoggedIn', 'true');
+        }
+        showAttendanceTracker();
+    } else {
+        alert('Invalid username or password');
+    }
+}
+
+function showAttendanceTracker() {
+    document.getElementById('login-container').style.display = 'none';
+    document.getElementById('attendance-container').style.display = 'block';
+    setLanguage(currentLanguage); // Ensure the correct language is set after showing the container
     fetchAttendanceData();
 }
 
@@ -57,7 +103,7 @@ function fetchAttendanceData() {
             attendanceData = data;
             displayAttendanceData(data);
         })
-        .catch(error => console.error('Ошибка при получении данных о посещаемости:', error));
+        .catch(error => console.error('Error fetching attendance data:', error));
 }
 
 function displayAttendanceData(data) {
@@ -122,7 +168,7 @@ function saveEdit() {
     const departureTime = document.getElementById('edit-departure-time').value;
 
     if (isNaN(lat) || isNaN(lon)) {
-        alert("Широта и долгота должны быть допустимыми числами.");
+        alert("Latitude and Longitude must be valid numbers.");
         return;
     }
 
@@ -145,7 +191,7 @@ function saveEdit() {
     .then(response => {
         if (!response.ok) {
             return response.json().then(err => {
-                throw new Error(`Ошибка сервера: ${err.detail}`);
+                throw new Error(`Server error: ${err.detail}`);
             });
         }
         return response.json();
@@ -155,7 +201,7 @@ function saveEdit() {
         fetchAttendanceData();
     })
     .catch(error => {
-        console.error('Ошибка при обновлении данных сотрудника:', error);
-        alert(`Ошибка при обновлении данных сотрудника: ${error.message}`);
+        console.error('Error updating employee data:', error);
+        alert(`Error updating employee data: ${error.message}`);
     });
 }
