@@ -59,6 +59,10 @@ function setLanguage(language) {
     document.querySelector('label[for="password"]').textContent = translations[language].password + ":";
     document.querySelector('label[for="remember-me"]').textContent = translations[language].rememberMe;
     document.getElementById('logout-button').textContent = translations[language].logout;
+
+    if (document.getElementById('main-container').style.display === 'block') {
+        displayAttendanceData(attendanceData);
+    }
 }
 
 function checkLogin() {
