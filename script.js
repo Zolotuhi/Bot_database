@@ -14,6 +14,7 @@ const translations = {
         login: "Login",
         password: "Password",
         rememberMe: "Remember me",
+        logout: "Logout",
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -30,6 +31,7 @@ const translations = {
         login: "Логин",
         password: "Пароль",
         rememberMe: "Запомнить меня",
+        logout: "Выйти",
     }
 };
 
@@ -56,10 +58,11 @@ function setLanguage(language) {
     document.querySelector('label[for="username"]').textContent = translations[language].username + ":";
     document.querySelector('label[for="password"]').textContent = translations[language].password + ":";
     document.querySelector('label[for="remember-me"]').textContent = translations[language].rememberMe;
+    document.getElementById('logout-button').textContent = translations[language].logout;
 }
 
 function checkLogin() {
-    if (localStorage.getItem("isAuthenticated") === "true") {
+    if (localStorage.getItem("isAuthenticated") === "true" || sessionStorage.getItem("isAuthenticated") === "true") {
         document.getElementById('login-container').style.display = 'none';
         document.getElementById('main-container').style.display = 'block';
         fetchAttendanceData();
@@ -84,6 +87,12 @@ function login() {
     } else {
         alert("Invalid credentials");
     }
+}
+
+function logout() {
+    localStorage.removeItem("isAuthenticated");
+    sessionStorage.removeItem("isAuthenticated");
+    checkLogin();
 }
 
 function togglePassword() {
