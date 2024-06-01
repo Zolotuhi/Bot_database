@@ -10,6 +10,7 @@ const translations = {
         present: "Present",
         latitude: "Latitude",
         longitude: "Longitude",
+        search: "Search"
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -22,10 +23,12 @@ const translations = {
         present: "Присутствие",
         latitude: "Широта",
         longitude: "Долгота",
+        search: "Поиск"
     }
 };
 
 let currentLanguage = 'en';
+let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
     setLanguage(currentLanguage);
@@ -43,6 +46,7 @@ function setLanguage(language) {
     document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
     document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
     document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
+    document.querySelector('label[for="search-input"]').textContent = translations[language].search + ":";
     fetchAttendanceData();
 }
 
@@ -50,38 +54,51 @@ function fetchAttendanceData() {
     fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees')
         .then(response => response.json())
         .then(data => {
-            const container = document.getElementById('attendance-container');
-            container.innerHTML = '';
-
-            const table = document.createElement('table');
-            const thead = document.createElement('thead');
-            const tbody = document.createElement('tbody');
-
-            thead.innerHTML = `
-                <tr>
-                    <th>${translations[currentLanguage].username}</th>
-                    <th>${translations[currentLanguage].arrivalTime}</th>
-                    <th>${translations[currentLanguage].departureTime}</th>
-                    <th>${translations[currentLanguage].edit}</th>
-                </tr>
-            `;
-
-            data.forEach(employee => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${employee[1]}</td>
-                    <td>${employee[5]}</td>
-                    <td>${employee[6]}</td>
-                    <td><button onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
-                `;
-                tbody.appendChild(row);
-            });
-
-            table.appendChild(thead);
-            table.appendChild(tbody);
-            container.appendChild(table);
+            attendanceData = data;
+            displayAttendanceData(data);
         })
         .catch(error => console.error('Error fetching attendance data:', error));
+}
+
+function displayAttendanceData(data) {
+    const container = document.getElementById('attendance-container');
+    container.innerHTML = '';
+
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    thead.innerHTML = `
+        <tr>
+            <th>${translations[currentLanguage].username}</th>
+            <th>${translations[currentLanguage].arrivalTime}</th>
+            <th>${translations[currentLanguage].departureTime}</th>
+            <th>${translations[currentLanguage].edit}</th>
+        </tr>
+    `;
+
+    data.forEach(employee => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${employee[1]}</td>
+            <td>${employee[5]}</td>
+            <td>${employee[6]}</td>
+            <td><button onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    container.appendChild(table);
+}
+
+function filterAttendanceData() {
+    const searchInput = document.getElementById('search-input').value.toLowerCase();
+    const filteredData = attendanceData.filter(employee =>
+        employee[1].toLowerCase().includes(searchInput)
+    );
+    displayAttendanceData(filteredData);
 }
 
 function editEmployee(userId, username, present, lat, lon, arrivalTime, departureTime) {
@@ -142,3 +159,4 @@ function saveEdit() {
         alert(`Error updating employee data: ${error.message}`);
     });
 }
+
