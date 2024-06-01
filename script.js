@@ -27,7 +27,7 @@ const translations = {
     }
 };
 
-let currentLanguage = 'en';
+let currentLanguage = 'ru';
 let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -57,7 +57,7 @@ function fetchAttendanceData() {
             attendanceData = data;
             displayAttendanceData(data);
         })
-        .catch(error => console.error('Error fetching attendance data:', error));
+        .catch(error => console.error('Ошибка при получении данных о посещаемости:', error));
 }
 
 function displayAttendanceData(data) {
@@ -80,10 +80,10 @@ function displayAttendanceData(data) {
     data.forEach(employee => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${employee[1]}</td>
-            <td>${employee[5]}</td>
-            <td>${employee[6]}</td>
-            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
+            <td>${employee.username}</td>
+            <td>${employee.arrival_time}</td>
+            <td>${employee.departure_time}</td>
+            <td><button class="edit-btn" onclick="editEmployee('${employee.id}', '${employee.username}', ${employee.present}, ${employee.location_lat}, ${employee.location_lon}, '${employee.arrival_time}', '${employee.departure_time}')">${translations[currentLanguage].edit}</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -96,7 +96,7 @@ function displayAttendanceData(data) {
 function filterAttendanceData() {
     const searchInput = document.getElementById('search-input').value.toLowerCase();
     const filteredData = attendanceData.filter(employee =>
-        employee[1].toLowerCase().includes(searchInput)
+        employee.username.toLowerCase().includes(searchInput)
     );
     displayAttendanceData(filteredData);
 }
@@ -122,7 +122,7 @@ function saveEdit() {
     const departureTime = document.getElementById('edit-departure-time').value;
 
     if (isNaN(lat) || isNaN(lon)) {
-        alert("Latitude and Longitude must be valid numbers.");
+        alert("Широта и долгота должны быть допустимыми числами.");
         return;
     }
 
@@ -145,7 +145,7 @@ function saveEdit() {
     .then(response => {
         if (!response.ok) {
             return response.json().then(err => {
-                throw new Error(`Server error: ${err.detail}`);
+                throw new Error(`Ошибка сервера: ${err.detail}`);
             });
         }
         return response.json();
@@ -155,7 +155,7 @@ function saveEdit() {
         fetchAttendanceData();
     })
     .catch(error => {
-        console.error('Error updating employee data:', error);
-        alert(`Error updating employee data: ${error.message}`);
+        console.error('Ошибка при обновлении данных сотрудника:', error);
+        alert(`Ошибка при обновлении данных сотрудника: ${error.message}`);
     });
 }
