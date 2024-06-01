@@ -13,11 +13,13 @@
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <span class="eye-icon" onclick="togglePasswordVisibility()">
-                <img src="eye-icon.png" alt="Show/Hide Password" />
-            </span>
-            <label for="remember-me">
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+                <span class="eye-icon" onclick="togglePasswordVisibility()">
+                    <img src="eye-icon.png" alt="Show/Hide Password" />
+                </span>
+            </div>
+            <label for="remember-me" class="remember-me-container">
                 <input type="checkbox" id="remember-me"> Remember me
             </label>
             <button type="button" onclick="login()">Login</button>
