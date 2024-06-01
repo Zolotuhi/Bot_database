@@ -10,7 +10,9 @@ const translations = {
         present: "Present",
         latitude: "Latitude",
         longitude: "Longitude",
-        search: "Search"
+        search: "Search",
+        login: "Login",
+        password: "Password"
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -23,7 +25,9 @@ const translations = {
         present: "Присутствие",
         latitude: "Широта",
         longitude: "Долгота",
-        search: "Поиск"
+        search: "Поиск",
+        login: "Логин",
+        password: "Пароль"
     }
 };
 
@@ -32,7 +36,7 @@ let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
     setLanguage(currentLanguage);
-    fetchAttendanceData();
+    checkLogin();
 });
 
 function setLanguage(language) {
@@ -47,7 +51,29 @@ function setLanguage(language) {
     document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
     document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
     document.querySelector('label[for="search-input"]').textContent = translations[language].search + ":";
-    fetchAttendanceData();
+}
+
+function checkLogin() {
+    if (localStorage.getItem("isAuthenticated") === "true") {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('main-container').style.display = 'block';
+        fetchAttendanceData();
+    } else {
+        document.getElementById('login-container').style.display = 'block';
+        document.getElementById('main-container').style.display = 'none';
+    }
+}
+
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
+        localStorage.setItem("isAuthenticated", "true");
+        checkLogin();
+    } else {
+        alert("Invalid credentials");
+    }
 }
 
 function fetchAttendanceData() {
