@@ -11,14 +11,15 @@
         <h1>Attendance Tracker</h1>
         <form id="login-form">
             <label for="username">Username:</label>
-            <input type="text" id="username" required>
+            <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
-            <input type="password" id="password" required>
-            <button id="toggle-password" type="button" onclick="togglePassword()">👁️</button>
-            <div id="remember-me-container">
-                <input type="checkbox" id="remember-me"> 
-                <label for="remember-me">Remember me</label>
-            </div>
+            <input type="password" id="password" name="password" required>
+            <span class="eye-icon" onclick="togglePasswordVisibility()">
+                <img src="eye-icon.png" alt="Show/Hide Password" />
+            </span>
+            <label for="remember-me">
+                <input type="checkbox" id="remember-me"> Remember me
+            </label>
             <button type="button" onclick="login()">Login</button>
         </form>
         <div id="language-selector">
@@ -26,41 +27,6 @@
             <button onclick="setLanguage('ru')">Русский</button>
         </div>
     </div>
-
-    <div id="main-container" style="display: none;">
-        <h1>Attendance Tracker</h1>
-        <button type="button" id="logout-button" onclick="logout()">Logout</button>
-        <div id="language-selector">
-            <button onclick="setLanguage('en')">English</button>
-            <button onclick="setLanguage('ru')">Русский</button>
-        </div>
-        <div id="search-container">
-            <label for="search-input">Search:</label>
-            <input type="text" id="search-input" oninput="filterAttendanceData()" placeholder="Search by username...">
-        </div>
-        <div id="attendance-container"></div>
-        
-        <div id="edit-form-container">
-            <h2 id="edit-title">Edit Employee</h2>
-            <form id="edit-form">
-                <input type="hidden" id="edit-user-id">
-                <label for="edit-username">Username:</label>
-                <input type="text" id="edit-username"><br>
-                <label for="edit-present">Present:</label>
-                <input type="checkbox" id="edit-present"><br>
-                <label for="edit-location-lat">Latitude:</label>
-                <input type="number" id="edit-location-lat" step="0.000001"><br>
-                <label for="edit-location-lon">Longitude:</label>
-                <input type="number" id="edit-location-lon" step="0.000001"><br>
-                <label for="edit-arrival-time">Arrival Time:</label>
-                <input type="text" id="edit-arrival-time"><br>
-                <label for="edit-departure-time">Departure Time:</label>
-                <input type="text" id="edit-departure-time"><br>
-                <button type="button" id="save-button" onclick="saveEdit()">Save</button>
-            </form>
-        </div>
-    </div>
-
     <script src="script.js"></script>
 </body>
 </html>
