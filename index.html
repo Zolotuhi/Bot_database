@@ -7,32 +7,30 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1>Attendance Tracker</h1>
     <div id="login-container">
-        <h1>Attendance Tracker</h1>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        
-        <label for="password">Password:</label>
-        <div class="password-container">
-            <input type="password" id="password" name="password" required>
-            <span class="eye-icon" onclick="togglePasswordVisibility()">
-                <img src="eye-icon.png" alt="Show/Hide Password">
-            </span>
-        </div>
-        
-        <div class="remember-me-container">
-            <input type="checkbox" id="remember-me" name="remember-me">
-            <label for="remember-me">Remember me</label>
-        </div>
-        
-        <button type="button" onclick="login()">Login</button>
-        
-        <div id="language-selector">
-            <button onclick="setLanguage('en')">English</button>
-            <button onclick="setLanguage('ru')">Русский</button>
-        </div>
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+                <span class="eye-icon" onclick="togglePasswordVisibility()">
+                    <img src="eye-icon.png" alt="Show/Hide Password">
+                </span>
+            </div>
+
+            <div class="remember-me-container">
+                <input type="checkbox" id="remember-me" name="remember-me">
+                <label for="remember-me" class="remember-me-label">Remember me</label>
+            </div>
+
+            <button type="button" onclick="login()">Login</button>
+        </form>
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ru')">Русский</button>
     </div>
-    
     <script src="script.js"></script>
 </body>
 </html>
