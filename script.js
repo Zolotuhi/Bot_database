@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     setLanguage(currentLanguage);
-    fetchAttendanceData();
 });
 
 const translations = {
@@ -98,7 +97,6 @@ function setLanguage(language) {
     document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
     document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
     document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
-    fetchAttendanceData();
 }
 
 function togglePasswordVisibility() {
@@ -116,7 +114,6 @@ function togglePasswordVisibility() {
 }
 
 function login() {
-    // Your login logic here
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const rememberMe = document.getElementById('remember-me').checked;
@@ -135,6 +132,8 @@ function login() {
 function showAttendanceTracker() {
     document.getElementById('login-container').style.display = 'none';
     document.getElementById('attendance-container').style.display = 'block';
+    setLanguage(currentLanguage); // Ensure the correct language is set after showing the container
+    fetchAttendanceData();
 }
 
 function fetchAttendanceData() {
@@ -153,7 +152,7 @@ function fetchAttendanceData() {
                     <th>${translations[currentLanguage].username}</th>
                     <th>${translations[currentLanguage].arrivalTime}</th>
                     <th>${translations[currentLanguage].departureTime}</th>
-                    <th>${translations[currentLanguage].edit}</th>
+                    <th>Edit</th>
                 </tr>
             `;
 
@@ -163,7 +162,7 @@ function fetchAttendanceData() {
                     <td>${employee[1]}</td>
                     <td>${employee[5]}</td>
                     <td>${employee[6]}</td>
-                    <td><button onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
+                    <td><button onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">Edit</button></td>
                 `;
                 tbody.appendChild(row);
             });
