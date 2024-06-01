@@ -8,6 +8,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    flex-direction: column;
 }
 
 h1 {
@@ -115,8 +116,13 @@ h1 {
 
 #attendance-container {
     max-width: 1000px;
-    margin: 0 auto;
+    width: 100%;
+    margin: 20px 0;
     overflow-x: auto;
+    background-color: #34495e;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 #search-container {
@@ -207,7 +213,8 @@ button:hover {
 }
 
 #edit-form input[type="text"],
-#edit-form input[type="checkbox"] {
+#edit-form input[type="checkbox"],
+#edit-form input[type="number"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -228,4 +235,16 @@ button:hover {
 
 #edit-form button:hover {
     background-color: #2ecc71;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.slider {
+    width: 200px;
+    margin: 0 20px;
 }
