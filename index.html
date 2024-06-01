@@ -1,74 +1,43 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Трекер Посещаемости</title>
+    <title>Attendance Tracker</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <div id="login-container">
-        <h1>Трекер Посещаемости</h1>
-        <form id="login-form">
-            <label for="username">Имя пользователя:</label>
-            <input type="text" id="username" name="username" required>
-
-            <label for="password">Пароль:</label>
-            <div class="password-container">
-                <input type="password" id="password" name="password" required>
-                <span class="eye-icon" onclick="togglePasswordVisibility()">
-                    <i class="fas fa-eye"></i>
-                </span>
-            </div>
-
-            <div class="remember-me-container">
-                <input type="checkbox" id="remember-me" name="remember-me">
-                <label for="remember-me">Запомнить меня</label>
-            </div>
-
-            <button type="button" onclick="login()">Войти</button>
+    <h1>Attendance Tracker</h1>
+    <div id="language-selector">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ru')">Русский</button>
+    </div>
+    <div id="search-container">
+        <label for="search-input">Search:</label>
+        <input type="text" id="search-input" oninput="filterAttendanceData()" placeholder="Search by username...">
+    </div>
+    <div id="attendance-container"></div>
+    
+    <div id="edit-form-container">
+        <h2 id="edit-title">Edit Employee</h2>
+        <form id="edit-form">
+            <input type="hidden" id="edit-user-id">
+            <label for="edit-username">Username:</label>
+            <input type="text" id="edit-username"><br>
+            <label for="edit-present">Present:</label>
+            <input type="checkbox" id="edit-present"><br>
+            <label for="edit-location-lat">Latitude:</label>
+            <input type="number" id="edit-location-lat" step="0.000001"><br>
+            <label for="edit-location-lon">Longitude:</label>
+            <input type="number" id="edit-location-lon" step="0.000001"><br>
+            <label for="edit-arrival-time">Arrival Time:</label>
+            <input type="text" id="edit-arrival-time"><br>
+            <label for="edit-departure-time">Departure Time:</label>
+            <input type="text" id="edit-departure-time"><br>
+            <button type="button" id="save-button" onclick="saveEdit()">Save</button>
         </form>
     </div>
-
-    <div id="attendance-container" style="display: none;">
-        <h1>Трекер Посещаемости</h1>
-        <div class="slider-container">
-            <div class="dropdown">
-                <button class="dropbtn"><i class="fas fa-globe"></i></button>
-                <div class="dropdown-content">
-                    <a href="#" onclick="setLanguage('en')">English</a>
-                    <a href="#" onclick="setLanguage('ru')">Русский</a>
-                </div>
-            </div>
-        </div>
-        <div id="search-container">
-            <input type="text" id="search-input" placeholder="Поиск...">
-            <button onclick="search()">Поиск</button>
-        </div>
-        <div id="attendance-table-container"></div>
-
-        <div id="edit-form-container" style="display: none;">
-            <h2 id="edit-title">Редактировать сотрудника</h2>
-            <form id="edit-form">
-                <input type="hidden" id="edit-user-id">
-                <label for="edit-username">Имя пользователя:</label>
-                <input type="text" id="edit-username"><br>
-                <label for="edit-present">Присутствие:</label>
-                <input type="checkbox" id="edit-present"><br>
-                <label for="edit-location-lat">Широта:</label>
-                <input type="number" id="edit-location-lat" step="0.000001"><br>
-                <label for="edit-location-lon">Долгота:</label>
-                <input type="number" id="edit-location-lon" step="0.000001"><br>
-                <label for="edit-arrival-time">Время прибытия:</label>
-                <input type="text" id="edit-arrival-time"><br>
-                <label for="edit-departure-time">Время отбытия:</label>
-                <input type="text" id="edit-departure-time"><br>
-                <button type="button" id="save-button" onclick="saveEdit()">Сохранить</button>
-            </form>
-        </div>
-    </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
