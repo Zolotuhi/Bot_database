@@ -97,7 +97,7 @@ function login() {
         }
         showAttendanceTracker();
     } else {
-        alert('Invalid username or password');
+        alert('Неверное имя пользователя или пароль');
     }
 }
 
@@ -167,7 +167,7 @@ function saveEdit() {
     const departureTime = document.getElementById('edit-departure-time').value;
 
     if (isNaN(lat) || isNaN(lon)) {
-        alert("Latitude and Longitude must be valid numbers.");
+        alert("Широта и долгота должны быть допустимыми числами.");
         return;
     }
 
@@ -190,7 +190,7 @@ function saveEdit() {
     .then(response => {
         if (!response.ok) {
             return response.json().then(err => {
-                throw new Error(`Server error: ${err.detail}`);
+                throw new Error(`Ошибка сервера: ${err.detail}`);
             });
         }
         return response.json();
@@ -200,8 +200,8 @@ function saveEdit() {
         fetchAttendanceData();
     })
     .catch(error => {
-        console.error('Error updating employee data:', error);
-        alert(`Error updating employee data: ${error.message}`);
+        console.error('Ошибка при обновлении данных сотрудника:', error);
+        alert(`Ошибка при обновлении данных сотрудника: ${error.message}`);
     });
 }
 
