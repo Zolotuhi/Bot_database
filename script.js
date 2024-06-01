@@ -1,64 +1,52 @@
-const translations = {
-    en: {
-        title: "Attendance Tracker",
-        username: "Username",
-        password: "Password",
-        rememberMe: "Remember me",
-        login: "Login",
-        english: "English",
-        russian: "Русский"
-    },
-    ru: {
-        title: "Трекер Посещаемости",
-        username: "Имя пользователя",
-        password: "Пароль",
-        rememberMe: "Запомнить меня",
-        login: "Войти",
-        english: "Английский",
-        russian: "Русский"
-    }
-};
-
-let currentLanguage = 'en';
-
 document.addEventListener("DOMContentLoaded", function() {
     setLanguage(currentLanguage);
+    if (!localStorage.getItem('rememberMe')) {
+        showLoginForm();
+    }
 });
-
-function setLanguage(language) {
-    currentLanguage = language;
-    document.querySelector('h1').textContent = translations[language].title;
-    document.querySelector('label[for="username"]').textContent = translations[language].username + ":";
-    document.querySelector('label[for="password"]').textContent = translations[language].password + ":";
-    document.querySelector('label[for="remember-me"]').textContent = translations[language].rememberMe;
-    document.querySelector('button[onclick="login()"]').textContent = translations[language].login;
-    document.querySelector('button[onclick="setLanguage(\'en\')"]').textContent = translations[language].english;
-    document.querySelector('button[onclick="setLanguage(\'ru\')"]').textContent = translations[language].russian;
-}
-
-function togglePasswordVisibility() {
-    const passwordInput = document.getElementById('password');
-    const type = passwordInput.type === 'password' ? 'text' : 'password';
-    passwordInput.type = type;
-}
 
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const rememberMe = document.getElementById('remember-me').checked;
 
-    if (username === 'admin' && password === 'password') {
+    // Проверка авторизации (замените на свою логику)
+    if (username === 'admin' && password === 'admin') {
         if (rememberMe) {
-            localStorage.setItem('loggedIn', 'true');
+            localStorage.setItem('rememberMe', 'true');
         }
-        window.location.href = 'attendance.html'; // Redirect to the main page
+        hideLoginForm();
     } else {
-        alert('Invalid login credentials');
+        alert('Неверные данные для входа');
     }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    if (localStorage.getItem('loggedIn') === 'true') {
-        window.location.href = 'attendance.html'; // Redirect if already logged in
+function showLoginForm() {
+    document.getElementById('login-container').style.display = 'block';
+}
+
+function hideLoginForm() {
+    document.getElementById('login-container').style.display = 'none';
+}
+
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.querySelector('.eye-icon img');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.src = 'eye-slash-icon.png'; // замените на значок с закрытым глазом
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.src = 'eye-icon.png'; // замените на значок с открытым глазом
     }
-});
+}
+
+function setLanguage(language) {
+    currentLanguage = language;
+    document.querySelector('h1').textContent = translations[language].title;
+    document.querySelector('label[for="username"]').textContent = translations[language].username + ":";
+    document.querySelector('label[for="password"]').textContent = translations[language].password + ":";
+    document.querySelector('.remember-me-label').textContent = translations[language].rememberMe;
+    document.querySelector('button[onclick="login()"]').textContent = translations[language].login;
+    fetchAttendanceData();
+}
