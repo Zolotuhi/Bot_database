@@ -12,6 +12,10 @@
         <button onclick="setLanguage('en')">English</button>
         <button onclick="setLanguage('ru')">Русский</button>
     </div>
+    <div id="search-container">
+        <label for="search-input">Search:</label>
+        <input type="text" id="search-input" oninput="filterAttendanceData()" placeholder="Search by username...">
+    </div>
     <div id="attendance-container"></div>
     
     <div id="edit-form-container" style="display: none;">
