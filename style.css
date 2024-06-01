@@ -35,7 +35,7 @@ h1 {
 
 #login-container input[type="text"],
 #login-container input[type="password"] {
-    width: calc(100% - 22px);
+    width: calc(100% - 40px);
     padding: 10px;
     margin-bottom: 10px;
     border: none;
@@ -43,20 +43,10 @@ h1 {
     box-sizing: border-box;
 }
 
-#login-container button {
-    width: 48%;
-    padding: 10px;
-    background-color: #27ae60;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    display: inline-block;
-}
-
-#login-container button:hover {
-    background-color: #2ecc71;
+#remember-me-container {
+    text-align: left;
+    margin-left: 20px;
+    margin-bottom: 10px;
 }
 
 #toggle-password {
@@ -69,6 +59,23 @@ h1 {
     margin-left: -40px;
     position: absolute;
     margin-top: -30px;
+}
+
+#login-container button {
+    width: calc(100% - 40px);
+    padding: 10px;
+    background-color: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 10px auto;
+}
+
+#login-container button:hover {
+    background-color: #2ecc71;
 }
 
 #logout-button {
