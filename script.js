@@ -159,4 +159,3 @@ function saveEdit() {
         alert(`Error updating employee data: ${error.message}`);
     });
 }
-
