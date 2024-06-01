@@ -45,8 +45,30 @@ h1 {
     border-radius: 5px;
 }
 
-#login-container input[type="checkbox"] {
-    margin-right: 10px;
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-container input[type="password"] {
+    width: calc(100% - 32px);
+    margin-bottom: 0;
+}
+
+.eye-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#login-container .remember-me-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
 }
 
 #login-container button {
@@ -83,16 +105,4 @@ h1 {
 
 #language-selector button:hover {
     background-color: #2980b9;
-}
-
-.eye-icon {
-    cursor: pointer;
-    position: relative;
-    top: -38px;
-    left: 130px;
-    z-index: 2;
-}
-
-input[type="text"], input[type="password"] {
-    width: calc(100% - 32px);
 }
