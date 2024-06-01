@@ -8,17 +8,17 @@
 </head>
 <body>
     <div id="login-container">
-        <h1>Login</h1>
+        <h1>Attendance Tracker</h1>
         <form id="login-form">
             <label for="username">Username:</label>
             <input type="text" id="username" required><br>
             <label for="password">Password:</label>
-            <input type="password" id="password" required><br>
+            <input type="password" id="password" required>
+            <button id="toggle-password" type="button" onclick="togglePassword()">👁️</button><br>
             <div id="remember-me-container">
                 <input type="checkbox" id="remember-me"> 
-                <label for="remember-me">Remember me</label><br>
+                <label for="remember-me">Remember me</label>
             </div>
-            <button id="toggle-password" type="button" onclick="togglePassword()">👁️</button>
             <button type="button" onclick="login()">Login</button>
         </form>
     </div>
