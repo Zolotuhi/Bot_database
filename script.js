@@ -72,9 +72,14 @@ function checkLogin() {
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const rememberMe = document.getElementById('remember-me').checked;
 
     if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
-        localStorage.setItem("isAuthenticated", "true");
+        if (rememberMe) {
+            localStorage.setItem("isAuthenticated", "true");
+        } else {
+            sessionStorage.setItem("isAuthenticated", "true");
+        }
         checkLogin();
     } else {
         alert("Invalid credentials");
