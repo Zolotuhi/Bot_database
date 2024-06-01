@@ -44,7 +44,7 @@ const translations = {
     }
 };
 
-let currentLanguage = 'en';
+let currentLanguage = 'ru';
 
 function setLanguage(language) {
     currentLanguage = language;
@@ -143,7 +143,7 @@ function fetchAttendanceData() {
             table.appendChild(tbody);
             container.appendChild(table);
         })
-        .catch(error => console.error('Error fetching attendance data:', error));
+        .catch(error => console.error('Ошибка при получении данных о посещаемости:', error));
 }
 
 function editEmployee(userId, username, present, lat, lon, arrivalTime, departureTime) {
