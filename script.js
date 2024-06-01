@@ -2,78 +2,54 @@ const translations = {
     en: {
         title: "Attendance Tracker",
         username: "Username",
-        arrivalTime: "Arrival Time",
-        departureTime: "Departure Time",
-        edit: "Edit",
+        password: "Password",
+        rememberMe: "Remember me",
+        login: "Login",
+        search: "Search",
         editEmployee: "Edit Employee",
         save: "Save",
         present: "Present",
         latitude: "Latitude",
         longitude: "Longitude",
-        search: "Search",
-        login: "Login",
-        password: "Password",
-        rememberMe: "Remember me",
-        logout: "Logout",
     },
     ru: {
         title: "Трекер Посещаемости",
         username: "Имя пользователя",
-        arrivalTime: "Время прибытия",
-        departureTime: "Время ухода",
-        edit: "Редактировать",
+        password: "Пароль",
+        rememberMe: "Запомнить меня",
+        login: "Войти",
+        search: "Поиск",
         editEmployee: "Редактировать сотрудника",
         save: "Сохранить",
         present: "Присутствие",
         latitude: "Широта",
         longitude: "Долгота",
-        search: "Поиск",
-        login: "Логин",
-        password: "Пароль",
-        rememberMe: "Запомнить меня",
-        logout: "Выйти",
     }
 };
 
 let currentLanguage = 'en';
-let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
+    checkLoginStatus();
     setLanguage(currentLanguage);
-    checkLogin();
+    fetchAttendanceData();
 });
 
 function setLanguage(language) {
     currentLanguage = language;
     document.querySelector('h1').textContent = translations[language].title;
+    document.querySelector('label[for="username"]').textContent = translations[language].username + ":";
+    document.querySelector('label[for="password"]').textContent = translations[language].password + ":";
+    document.querySelector('label[for="remember-me"]').textContent = translations[language].rememberMe;
+    document.querySelector('button[onclick="login()"]').textContent = translations[language].login;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
     document.querySelector('label[for="edit-username"]').textContent = translations[language].username + ":";
     document.querySelector('label[for="edit-present"]').textContent = translations[language].present + ":";
     document.querySelector('label[for="edit-location-lat"]').textContent = translations[language].latitude + ":";
     document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
-    document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
-    document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
     document.querySelector('label[for="search-input"]').textContent = translations[language].search + ":";
-    document.querySelector('label[for="username"]').textContent = translations[language].username + ":";
-    document.querySelector('label[for="password"]').textContent = translations[language].password + ":";
-    document.querySelector('label[for="remember-me"]').textContent = translations[language].rememberMe;
-    document.getElementById('logout-button').textContent = translations[language].logout;
-
-    if (document.getElementById('main-container').style.display === 'block') {
-        displayAttendanceData(attendanceData);
-    }
-}
-
-function checkLogin() {
-    if (localStorage.getItem("isAuthenticated") === "true" || sessionStorage.getItem("isAuthenticated") === "true") {
-        document.getElementById('login-container').style.display = 'none';
-        document.getElementById('main-container').style.display = 'block';
-        fetchAttendanceData();
-    } else {
-        document.getElementById('login-container').style.display = 'block';
-        document.getElementById('main-container').style.display = 'none';
-    }
+    fetchAttendanceData();
 }
 
 function login() {
@@ -81,79 +57,81 @@ function login() {
     const password = document.getElementById('password').value;
     const rememberMe = document.getElementById('remember-me').checked;
 
-    if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
+    if (username === "admin" && password === "password") {
         if (rememberMe) {
-            localStorage.setItem("isAuthenticated", "true");
-        } else {
-            sessionStorage.setItem("isAuthenticated", "true");
+            localStorage.setItem('isLoggedIn', 'true');
         }
-        checkLogin();
+        sessionStorage.setItem('isLoggedIn', 'true');
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('main-container').style.display = 'block';
     } else {
-        alert("Invalid credentials");
+        alert("Invalid username or password.");
     }
 }
 
 function logout() {
-    localStorage.removeItem("isAuthenticated");
-    sessionStorage.removeItem("isAuthenticated");
-    checkLogin();
+    localStorage.removeItem('isLoggedIn');
+    sessionStorage.removeItem('isLoggedIn');
+    document.getElementById('login-container').style.display = 'block';
+    document.getElementById('main-container').style.display = 'none';
+}
+
+function checkLoginStatus() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') || sessionStorage.getItem('isLoggedIn');
+    if (isLoggedIn) {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('main-container').style.display = 'block';
+    } else {
+        document.getElementById('login-container').style.display = 'block';
+        document.getElementById('main-container').style.display = 'none';
+    }
 }
 
 function togglePassword() {
     const passwordField = document.getElementById('password');
-    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordField.setAttribute('type', type);
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+    } else {
+        passwordField.type = "password";
+    }
 }
 
 function fetchAttendanceData() {
     fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees')
         .then(response => response.json())
         .then(data => {
-            attendanceData = data;
-            displayAttendanceData(data);
+            const container = document.getElementById('attendance-container');
+            container.innerHTML = '';
+
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            thead.innerHTML = `
+                <tr>
+                    <th>${translations[currentLanguage].username}</th>
+                    <th>${translations[currentLanguage].arrivalTime}</th>
+                    <th>${translations[currentLanguage].departureTime}</th>
+                    <th>${translations[currentLanguage].edit}</th>
+                </tr>
+            `;
+
+            data.forEach(employee => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${employee[1]}</td>
+                    <td>${employee[5]}</td>
+                    <td>${employee[6]}</td>
+                    <td><button onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            container.appendChild(table);
         })
         .catch(error => console.error('Error fetching attendance data:', error));
-}
-
-function displayAttendanceData(data) {
-    const container = document.getElementById('attendance-container');
-    container.innerHTML = '';
-
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
-
-    thead.innerHTML = `
-        <tr>
-            <th>${translations[currentLanguage].username}</th>
-            <th>${translations[currentLanguage].arrivalTime}</th>
-            <th>${translations[currentLanguage].departureTime}</th>
-            <th>${translations[currentLanguage].edit}</th>
-        </tr>
-    `;
-
-    data.forEach(employee => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${employee[1]}</td>
-            <td>${employee[5]}</td>
-            <td>${employee[6]}</td>
-            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
-        `;
-        tbody.appendChild(row);
-    });
-
-    table.appendChild(thead);
-    table.appendChild(tbody);
-    container.appendChild(table);
-}
-
-function filterAttendanceData() {
-    const searchInput = document.getElementById('search-input').value.toLowerCase();
-    const filteredData = attendanceData.filter(employee =>
-        employee[1].toLowerCase().includes(searchInput)
-    );
-    displayAttendanceData(filteredData);
 }
 
 function editEmployee(userId, username, present, lat, lon, arrivalTime, departureTime) {
