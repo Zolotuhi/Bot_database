@@ -15,8 +15,7 @@ const translations = {
         password: "Password",
         rememberMe: "Remember me",
         logout: "Logout",
-        searchPlaceholder: "Search by username...",
-        export: "Export to Excel"
+        searchPlaceholder: "Search by username..."
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -34,8 +33,7 @@ const translations = {
         password: "Пароль",
         rememberMe: "Запомнить меня",
         logout: "Выйти",
-        searchPlaceholder: "Поиск по имени пользователя...",
-        export: "Экспорт в Excel"
+        searchPlaceholder: "Поиск по имени пользователя..."
     },
     kz: {
         title: "Қатысу Трекері",
@@ -53,8 +51,7 @@ const translations = {
         password: "Құпия сөз",
         rememberMe: "Мені есте сақта",
         logout: "Шығу",
-        searchPlaceholder: "Пайдаланушы аты бойынша іздеу...",
-        export: "Excel-ге экспорттау"
+        searchPlaceholder: "Пайдаланушы аты бойынша іздеу..."
     }
 };
 
@@ -88,11 +85,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('logoutButton').addEventListener('click', function() {
         logout();
     });
-
-    // Add event listener for export button
-    document.getElementById('exportButton').addEventListener('click', function() {
-        exportData();
-    });
 });
 
 function setLanguage(language) {
@@ -108,7 +100,6 @@ function setLanguage(language) {
     document.getElementById('main-title').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
-    document.getElementById('exportButton').textContent = translations[language].export;
 }
 
 function checkLogin() {
@@ -142,7 +133,7 @@ function logout() {
 }
 
 function fetchAttendanceData() {
-    fetch('https://yourapiurl.com/api/employees')
+    fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees')
         .then(response => response.json())
         .then(data => {
             attendanceData = data;
@@ -226,7 +217,7 @@ function saveEdit() {
         departure_time: departureTime
     };
 
-    fetch(`https://yourapiurl.com/api/employees/${userId}`, {
+    fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -249,15 +240,4 @@ function saveEdit() {
         console.error('Error updating employee data:', error);
         alert(`Error updating employee data: ${error.message}`);
     });
-}
-
-function exportData() {
-    const ws = XLSX.utils.json_to_sheet(attendanceData.map(emp => ({
-        Username: emp[1],
-        ArrivalTime: emp[5],
-        DepartureTime: emp[6]
-    })));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Attendance");
-    XLSX.writeFile(wb, "attendance_data.xlsx");
 }
