@@ -10,7 +10,13 @@ const translations = {
         present: "Present",
         latitude: "Latitude",
         longitude: "Longitude",
-        search: "Search"
+        search: "Search",
+        login: "Login",
+        password: "Password",
+        rememberMe: "Remember me",
+        logout: "Logout",
+        searchPlaceholder: "Search by username...",
+        export: "Export to Excel"
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -23,41 +29,126 @@ const translations = {
         present: "Присутствие",
         latitude: "Широта",
         longitude: "Долгота",
-        search: "Поиск"
+        search: "Поиск",
+        login: "Логин",
+        password: "Пароль",
+        rememberMe: "Запомнить меня",
+        logout: "Выйти",
+        searchPlaceholder: "Поиск по имени пользователя...",
+        export: "Экспорт в Excel"
+    },
+    kz: {
+        title: "Қатысу Трекері",
+        username: "Пайдаланушы аты",
+        arrivalTime: "Келу уақыты",
+        departureTime: "Кету уақыты",
+        edit: "Өңдеу",
+        editEmployee: "Қызметкерді өңдеу",
+        save: "Сақтау",
+        present: "Қатысу",
+        latitude: "Ендік",
+        longitude: "Бойлық",
+        search: "Іздеу",
+        login: "Кіру",
+        password: "Құпия сөз",
+        rememberMe: "Мені есте сақта",
+        logout: "Шығу",
+        searchPlaceholder: "Пайдаланушы аты бойынша іздеу...",
+        export: "Excel-ге экспорттау"
     }
 };
 
-let currentLanguage = 'ru';
+let currentLanguage = 'en';
 let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
+    // Set initial language
     setLanguage(currentLanguage);
-    fetchAttendanceData();
+
+    // Add event listeners for language buttons
+    document.getElementById('btn-en').addEventListener('click', function() {
+        setLanguage('en');
+    });
+    document.getElementById('btn-ru').addEventListener('click', function() {
+        setLanguage('ru');
+    });
+    document.getElementById('btn-kz').addEventListener('click', function() {
+        setLanguage('kz');
+    });
+
+    // Add event listener for password toggle
+    document.getElementById('toggle-password').addEventListener('click', function() {
+        const passwordField = document.getElementById('password');
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash');
+    });
+
+    // Add event listener for logout button
+    document.getElementById('logoutButton').addEventListener('click', function() {
+        logout();
+    });
+
+    // Add event listener for export button
+    document.getElementById('exportButton').addEventListener('click', function() {
+        exportData();
+    });
 });
 
 function setLanguage(language) {
     currentLanguage = language;
     document.querySelector('h1').textContent = translations[language].title;
+    document.querySelector('label[for="username"]').textContent = translations[language].username + ":";
+    document.querySelector('label[for="password"]').textContent = translations[language].password + ":";
+    document.querySelector('label[for="remember-me"]').textContent = translations[language].rememberMe;
+    document.querySelector('button[onclick="login()"]').textContent = translations[language].login;
+    document.getElementById('logoutButton').textContent = translations[language].logout;
+    document.getElementById('search-label').textContent = translations[language].search + ":";
+    document.getElementById('search-input').placeholder = translations[language].searchPlaceholder;
+    document.getElementById('main-title').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
-    document.querySelector('label[for="edit-username"]').textContent = translations[language].username + ":";
-    document.querySelector('label[for="edit-present"]').textContent = translations[language].present + ":";
-    document.querySelector('label[for="edit-location-lat"]').textContent = translations[language].latitude + ":";
-    document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
-    document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
-    document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
-    document.querySelector('label[for="search-input"]').textContent = translations[language].search + ":";
-    fetchAttendanceData();
+    document.getElementById('exportButton').textContent = translations[language].export;
+}
+
+function checkLogin() {
+    if (localStorage.getItem("isAuthenticated") === "true") {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('main-container').style.display = 'block';
+        setLanguage(localStorage.getItem("preferredLanguage") || currentLanguage); // Apply selected language to main container
+        fetchAttendanceData();
+    } else {
+        document.getElementById('login-container').style.display = 'block';
+        document.getElementById('main-container').style.display = 'none';
+    }
+}
+
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("preferredLanguage", currentLanguage); // Save selected language
+        checkLogin();
+    } else {
+        alert("Invalid credentials");
+    }
+}
+
+function logout() {
+    localStorage.removeItem("isAuthenticated");
+    checkLogin();
 }
 
 function fetchAttendanceData() {
-    fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees')
+    fetch('https://yourapiurl.com/api/employees')
         .then(response => response.json())
         .then(data => {
             attendanceData = data;
             displayAttendanceData(data);
         })
-        .catch(error => console.error('Ошибка при получении данных о посещаемости:', error));
+        .catch(error => console.error('Error fetching attendance data:', error));
 }
 
 function displayAttendanceData(data) {
@@ -80,10 +171,10 @@ function displayAttendanceData(data) {
     data.forEach(employee => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${employee.username}</td>
-            <td>${employee.arrival_time}</td>
-            <td>${employee.departure_time}</td>
-            <td><button class="edit-btn" onclick="editEmployee('${employee.id}', '${employee.username}', ${employee.present}, ${employee.location_lat}, ${employee.location_lon}, '${employee.arrival_time}', '${employee.departure_time}')">${translations[currentLanguage].edit}</button></td>
+            <td>${employee[1]}</td>
+            <td>${employee[5]}</td>
+            <td>${employee[6]}</td>
+            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -96,7 +187,7 @@ function displayAttendanceData(data) {
 function filterAttendanceData() {
     const searchInput = document.getElementById('search-input').value.toLowerCase();
     const filteredData = attendanceData.filter(employee =>
-        employee.username.toLowerCase().includes(searchInput)
+        employee[1].toLowerCase().includes(searchInput)
     );
     displayAttendanceData(filteredData);
 }
@@ -122,7 +213,7 @@ function saveEdit() {
     const departureTime = document.getElementById('edit-departure-time').value;
 
     if (isNaN(lat) || isNaN(lon)) {
-        alert("Широта и долгота должны быть допустимыми числами.");
+        alert("Latitude and Longitude must be valid numbers.");
         return;
     }
 
@@ -135,7 +226,7 @@ function saveEdit() {
         departure_time: departureTime
     };
 
-    fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
+    fetch(`https://yourapiurl.com/api/employees/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -145,7 +236,7 @@ function saveEdit() {
     .then(response => {
         if (!response.ok) {
             return response.json().then(err => {
-                throw new Error(`Ошибка сервера: ${err.detail}`);
+                throw new Error(`Server error: ${err.detail}`);
             });
         }
         return response.json();
@@ -155,7 +246,18 @@ function saveEdit() {
         fetchAttendanceData();
     })
     .catch(error => {
-        console.error('Ошибка при обновлении данных сотрудника:', error);
-        alert(`Ошибка при обновлении данных сотрудника: ${error.message}`);
+        console.error('Error updating employee data:', error);
+        alert(`Error updating employee data: ${error.message}`);
     });
+}
+
+function exportData() {
+    const ws = XLSX.utils.json_to_sheet(attendanceData.map(emp => ({
+        Username: emp[1],
+        ArrivalTime: emp[5],
+        DepartureTime: emp[6]
+    })));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Attendance");
+    XLSX.writeFile(wb, "attendance_data.xlsx");
 }
