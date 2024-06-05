@@ -10,6 +10,7 @@ const translations = {
         present: "Present",
         latitude: "Latitude",
         longitude: "Longitude",
+        absences: "Absences",
         search: "Search",
         login: "Login",
         password: "Password",
@@ -28,6 +29,7 @@ const translations = {
         present: "Присутствие",
         latitude: "Широта",
         longitude: "Долгота",
+        absences: "Отсутствия",
         search: "Поиск",
         login: "Логин",
         password: "Пароль",
@@ -46,6 +48,7 @@ const translations = {
         present: "Қатысу",
         latitude: "Ендік",
         longitude: "Бойлық",
+        absences: "Қатыспау",
         search: "Іздеу",
         login: "Кіру",
         password: "Құпия сөз",
@@ -155,6 +158,7 @@ function displayAttendanceData(data) {
             <th>${translations[currentLanguage].username}</th>
             <th>${translations[currentLanguage].arrivalTime}</th>
             <th>${translations[currentLanguage].departureTime}</th>
+            <th>${translations[currentLanguage].absences}</th>
             <th>${translations[currentLanguage].edit}</th>
         </tr>
     `;
@@ -165,7 +169,8 @@ function displayAttendanceData(data) {
             <td>${employee[1]}</td>
             <td>${employee[5]}</td>
             <td>${employee[6]}</td>
-            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
+            <td>${employee[7]}</td>
+            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}', '${employee[7]}')">${translations[currentLanguage].edit}</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -175,15 +180,7 @@ function displayAttendanceData(data) {
     container.appendChild(table);
 }
 
-function filterAttendanceData() {
-    const searchInput = document.getElementById('search-input').value.toLowerCase();
-    const filteredData = attendanceData.filter(employee =>
-        employee[1].toLowerCase().includes(searchInput)
-    );
-    displayAttendanceData(filteredData);
-}
-
-function editEmployee(userId, username, present, lat, lon, arrivalTime, departureTime) {
+function editEmployee(userId, username, present, lat, lon, arrivalTime, departureTime, absences) {
     document.getElementById('edit-user-id').value = userId;
     document.getElementById('edit-username').value = username;
     document.getElementById('edit-present').checked = present;
@@ -191,6 +188,7 @@ function editEmployee(userId, username, present, lat, lon, arrivalTime, departur
     document.getElementById('edit-location-lon').value = lon;
     document.getElementById('edit-arrival-time').value = arrivalTime;
     document.getElementById('edit-departure-time').value = departureTime;
+    document.getElementById('edit-absences').value = absences;
     document.getElementById('edit-form-container').style.display = 'block';
 }
 
@@ -202,6 +200,7 @@ function saveEdit() {
     const lon = parseFloat(document.getElementById('edit-location-lon').value);
     const arrivalTime = document.getElementById('edit-arrival-time').value;
     const departureTime = document.getElementById('edit-departure-time').value;
+    const absences = document.getElementById('edit-absences').value;
 
     if (isNaN(lat) || isNaN(lon)) {
         alert("Latitude and Longitude must be valid numbers.");
@@ -214,7 +213,8 @@ function saveEdit() {
         location_lat: lat,
         location_lon: lon,
         arrival_time: arrivalTime,
-        departure_time: departureTime
+        departure_time: departureTime,
+        absences: absences
     };
 
     fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
@@ -241,3 +241,4 @@ function saveEdit() {
         alert(`Error updating employee data: ${error.message}`);
     });
 }
+
