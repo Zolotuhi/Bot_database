@@ -36,10 +36,9 @@
     </div>
 
     <div id="main-container" style="display: none;">
-        <h1 id="main-title">Attendance Tracker</h1>
-        <button id="logoutButton" class="logout-button">Logout</button>
+        <h1>Attendance Tracker</h1>
         <div id="search-container">
-            <label for="search-input" id="search-label">Search:</label>
+            <label for="search-input">Search:</label>
             <input type="text" id="search-input" oninput="filterAttendanceData()" placeholder="Search by username...">
         </div>
         <div id="attendance-container"></div>
@@ -60,6 +59,8 @@
                 <input type="text" id="edit-arrival-time"><br>
                 <label for="edit-departure-time">Departure Time:</label>
                 <input type="text" id="edit-departure-time"><br>
+                <label for="edit-absences">Absences:</label>
+                <textarea id="edit-absences"></textarea><br>
                 <button type="button" id="save-button" onclick="saveEdit()">Save</button>
             </form>
         </div>
