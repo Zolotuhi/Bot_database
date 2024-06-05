@@ -14,7 +14,8 @@ const translations = {
         login: "Login",
         password: "Password",
         rememberMe: "Remember me",
-        absences: "Absences"
+        logout: "Logout",
+        searchPlaceholder: "Search by username..."
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -31,10 +32,11 @@ const translations = {
         login: "Логин",
         password: "Пароль",
         rememberMe: "Запомнить меня",
-        absences: "Отсутствия"
+        logout: "Выйти",
+        searchPlaceholder: "Поиск по имени пользователя..."
     },
     kz: {
-        title: "Қатысу трекері",
+        title: "Қатысу Трекері",
         username: "Пайдаланушы аты",
         arrivalTime: "Келу уақыты",
         departureTime: "Кету уақыты",
@@ -47,8 +49,9 @@ const translations = {
         search: "Іздеу",
         login: "Кіру",
         password: "Құпия сөз",
-        rememberMe: "Мені есіңде сақта",
-        absences: "Жоқ болу"
+        rememberMe: "Мені есте сақта",
+        logout: "Шығу",
+        searchPlaceholder: "Пайдаланушы аты бойынша іздеу..."
     }
 };
 
@@ -56,40 +59,54 @@ let currentLanguage = 'en';
 let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
+    // Set initial language
     setLanguage(currentLanguage);
-    checkLogin();
 
-    // Toggle password visibility
+    // Add event listeners for language buttons
+    document.getElementById('btn-en').addEventListener('click', function() {
+        setLanguage('en');
+    });
+    document.getElementById('btn-ru').addEventListener('click', function() {
+        setLanguage('ru');
+    });
+    document.getElementById('btn-kz').addEventListener('click', function() {
+        setLanguage('kz');
+    });
+
+    // Add event listener for password toggle
     document.getElementById('toggle-password').addEventListener('click', function() {
         const passwordField = document.getElementById('password');
         const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordField.setAttribute('type', type);
         this.classList.toggle('fa-eye-slash');
     });
+
+    // Add event listener for logout button
+    document.getElementById('logoutButton').addEventListener('click', function() {
+        logout();
+    });
 });
 
 function setLanguage(language) {
     currentLanguage = language;
     document.querySelector('h1').textContent = translations[language].title;
-    document.getElementById('edit-title').textContent = translations[language].editEmployee;
-    document.getElementById('save-button').textContent = translations[language].save;
-    document.querySelector('label[for="edit-username"]').textContent = translations[language].username + ":";
-    document.querySelector('label[for="edit-present"]').textContent = translations[language].present + ":";
-    document.querySelector('label[for="edit-location-lat"]').textContent = translations[language].latitude + ":";
-    document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
-    document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
-    document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
-    document.querySelector('label[for="edit-absences"]').textContent = translations[language].absences + ":";
-    document.querySelector('label[for="search-input"]').textContent = translations[language].search + ":";
     document.querySelector('label[for="username"]').textContent = translations[language].username + ":";
     document.querySelector('label[for="password"]').textContent = translations[language].password + ":";
     document.querySelector('label[for="remember-me"]').textContent = translations[language].rememberMe;
+    document.querySelector('button[onclick="login()"]').textContent = translations[language].login;
+    document.getElementById('logoutButton').textContent = translations[language].logout;
+    document.getElementById('search-label').textContent = translations[language].search + ":";
+    document.getElementById('search-input').placeholder = translations[language].searchPlaceholder;
+    document.getElementById('main-title').textContent = translations[language].title;
+    document.getElementById('edit-title').textContent = translations[language].editEmployee;
+    document.getElementById('save-button').textContent = translations[language].save;
 }
 
 function checkLogin() {
     if (localStorage.getItem("isAuthenticated") === "true") {
         document.getElementById('login-container').style.display = 'none';
         document.getElementById('main-container').style.display = 'block';
+        setLanguage(localStorage.getItem("preferredLanguage") || currentLanguage); // Apply selected language to main container
         fetchAttendanceData();
     } else {
         document.getElementById('login-container').style.display = 'block';
@@ -103,10 +120,16 @@ function login() {
 
     if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
         localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("preferredLanguage", currentLanguage); // Save selected language
         checkLogin();
     } else {
         alert("Invalid credentials");
     }
+}
+
+function logout() {
+    localStorage.removeItem("isAuthenticated");
+    checkLogin();
 }
 
 function fetchAttendanceData() {
@@ -132,20 +155,17 @@ function displayAttendanceData(data) {
             <th>${translations[currentLanguage].username}</th>
             <th>${translations[currentLanguage].arrivalTime}</th>
             <th>${translations[currentLanguage].departureTime}</th>
-            <th>${translations[currentLanguage].absences}</th>
             <th>${translations[currentLanguage].edit}</th>
         </tr>
     `;
 
     data.forEach(employee => {
-        const absences = employee[7] ? JSON.parse(employee[7]).map(a => `${a.date}: ${a.reason}`).join(', ') : '';
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${employee[1]}</td>
             <td>${employee[5]}</td>
             <td>${employee[6]}</td>
-            <td>${absences}</td>
-            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}', '${absences}')">${translations[currentLanguage].edit}</button></td>
+            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}')">${translations[currentLanguage].edit}</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -163,7 +183,7 @@ function filterAttendanceData() {
     displayAttendanceData(filteredData);
 }
 
-function editEmployee(userId, username, present, lat, lon, arrivalTime, departureTime, absences) {
+function editEmployee(userId, username, present, lat, lon, arrivalTime, departureTime) {
     document.getElementById('edit-user-id').value = userId;
     document.getElementById('edit-username').value = username;
     document.getElementById('edit-present').checked = present;
@@ -171,7 +191,6 @@ function editEmployee(userId, username, present, lat, lon, arrivalTime, departur
     document.getElementById('edit-location-lon').value = lon;
     document.getElementById('edit-arrival-time').value = arrivalTime;
     document.getElementById('edit-departure-time').value = departureTime;
-    document.getElementById('edit-absences').value = absences;
     document.getElementById('edit-form-container').style.display = 'block';
 }
 
@@ -183,10 +202,6 @@ function saveEdit() {
     const lon = parseFloat(document.getElementById('edit-location-lon').value);
     const arrivalTime = document.getElementById('edit-arrival-time').value;
     const departureTime = document.getElementById('edit-departure-time').value;
-    const absences = document.getElementById('edit-absences').value.split(',').map(a => {
-        const [date, reason] = a.split(':').map(s => s.trim());
-        return { date, reason };
-    });
 
     if (isNaN(lat) || isNaN(lon)) {
         alert("Latitude and Longitude must be valid numbers.");
@@ -199,8 +214,7 @@ function saveEdit() {
         location_lat: lat,
         location_lon: lon,
         arrival_time: arrivalTime,
-        departure_time: departureTime,
-        absences: JSON.stringify(absences)
+        departure_time: departureTime
     };
 
     fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
