@@ -4,9 +4,6 @@ const translations = {
         username: "Username",
         arrivalTime: "Arrival Time",
         departureTime: "Departure Time",
-        edit: "Edit",
-        editEmployee: "Edit Employee",
-        save: "Save",
         present: "Present",
         latitude: "Latitude",
         longitude: "Longitude",
@@ -16,6 +13,8 @@ const translations = {
         password: "Password",
         rememberMe: "Remember me",
         logout: "Logout",
+        editEmployee: "Edit Employee",
+        save: "Save",
         delete: "Delete",
         searchPlaceholder: "Search by username..."
     },
@@ -24,9 +23,6 @@ const translations = {
         username: "Имя пользователя",
         arrivalTime: "Время прибытия",
         departureTime: "Время ухода",
-        edit: "Редактировать",
-        editEmployee: "Редактировать сотрудника",
-        save: "Сохранить",
         present: "Присутствие",
         latitude: "Широта",
         longitude: "Долгота",
@@ -36,6 +32,8 @@ const translations = {
         password: "Пароль",
         rememberMe: "Запомнить меня",
         logout: "Выйти",
+        editEmployee: "Редактировать сотрудника",
+        save: "Сохранить",
         delete: "Удалить",
         searchPlaceholder: "Поиск по имени пользователя..."
     },
@@ -44,9 +42,6 @@ const translations = {
         username: "Пайдаланушы аты",
         arrivalTime: "Келу уақыты",
         departureTime: "Кету уақыты",
-        edit: "Өңдеу",
-        editEmployee: "Қызметкерді өңдеу",
-        save: "Сақтау",
         present: "Қатысу",
         latitude: "Ендік",
         longitude: "Бойлық",
@@ -56,6 +51,8 @@ const translations = {
         password: "Құпия сөз",
         rememberMe: "Мені есте сақта",
         logout: "Шығу",
+        editEmployee: "Қызметкерді өңдеу",
+        save: "Сақтау",
         delete: "Жою",
         searchPlaceholder: "Пайдаланушы аты бойынша іздеу..."
     }
@@ -92,7 +89,6 @@ document.addEventListener("DOMContentLoaded", function() {
         logout();
     });
 
-    // Check login status
     checkLogin();
 });
 
@@ -110,6 +106,11 @@ function setLanguage(language) {
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
     document.getElementById('delete-button').textContent = translations[language].delete;
+
+    // Обновление данных при смене языка
+    if (attendanceData.length > 0) {
+        displayAttendanceData(attendanceData);
+    }
 }
 
 function checkLogin() {
@@ -121,32 +122,16 @@ function checkLogin() {
     } else {
         document.getElementById('login-container').style.display = 'block';
         document.getElementById('main-container').style.display = 'none';
-        // If credentials are saved, fill them in
-        const savedUsername = localStorage.getItem("savedUsername");
-        const savedPassword = localStorage.getItem("savedPassword");
-        if (savedUsername && savedPassword) {
-            document.getElementById('username').value = savedUsername;
-            document.getElementById('password').value = savedPassword;
-            document.getElementById('remember-me').checked = true;
-        }
     }
 }
 
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const rememberMe = document.getElementById('remember-me').checked;
 
     if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("preferredLanguage", currentLanguage); // Save selected language
-        if (rememberMe) {
-            localStorage.setItem("savedUsername", username);
-            localStorage.setItem("savedPassword", password);
-        } else {
-            localStorage.removeItem("savedUsername");
-            localStorage.removeItem("savedPassword");
-        }
         checkLogin();
     } else {
         alert("Invalid credentials");
@@ -166,6 +151,14 @@ function fetchAttendanceData() {
             displayAttendanceData(data);
         })
         .catch(error => console.error('Error fetching attendance data:', error));
+}
+
+function filterAttendanceData() {
+    const searchInput = document.getElementById('search-input').value.toLowerCase();
+    const filteredData = attendanceData.filter(employee => 
+        employee[1].toLowerCase().includes(searchInput)
+    );
+    displayAttendanceData(filteredData);
 }
 
 function displayAttendanceData(data) {
@@ -235,8 +228,8 @@ function saveEdit() {
     const data = {
         username: username,
         present: present,
-        location_lat: isNaN(lat) ? null : lat,
-        location_lon: isNaN(lon) ? null : lon,
+        location_lat: lat,
+        location_lon: lon,
         arrival_time: arrivalTime,
         departure_time: departureTime,
         absences: absences
@@ -271,26 +264,10 @@ function deleteEmployee() {
     const userId = document.getElementById('edit-user-id').value;
 
     fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
-        method: 'DELETE'
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => {
-                throw new Error(`Server error: ${err.detail}`);
-            });
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
         }
-        document.getElementById('edit-form-container').style.display = 'none';
-        fetchAttendanceData();
-    })
-    .catch(error => {
-        console.error('Error deleting employee:', error);
-        alert(`Error deleting employee: ${error.message}`);
-    });
-    function deleteEmployee() {
-    const userId = document.getElementById('edit-user-id').value;
-
-    fetch(`http://0.0.0.0:8080/api/employees/${userId}`, {
-        method: 'DELETE'
     })
     .then(response => {
         if (!response.ok) {
@@ -305,9 +282,7 @@ function deleteEmployee() {
         fetchAttendanceData();
     })
     .catch(error => {
-        console.error('Error deleting employee:', error);
-        alert(`Error deleting employee: ${error.message}`);
+        console.error('Error deleting employee data:', error);
+        alert(`Error deleting employee data: ${error.message}`);
     });
-}
-
 }
