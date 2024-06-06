@@ -16,6 +16,7 @@ const translations = {
         password: "Password",
         rememberMe: "Remember me",
         logout: "Logout",
+        delete: "Delete",
         searchPlaceholder: "Search by username..."
     },
     ru: {
@@ -35,6 +36,7 @@ const translations = {
         password: "Пароль",
         rememberMe: "Запомнить меня",
         logout: "Выйти",
+        delete: "Удалить",
         searchPlaceholder: "Поиск по имени пользователя..."
     },
     kz: {
@@ -54,6 +56,7 @@ const translations = {
         password: "Құпия сөз",
         rememberMe: "Мені есте сақта",
         logout: "Шығу",
+        delete: "Жою",
         searchPlaceholder: "Пайдаланушы аты бойынша іздеу..."
     }
 };
@@ -106,6 +109,7 @@ function setLanguage(language) {
     document.getElementById('main-title').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
+    document.getElementById('delete-button').textContent = translations[language].delete;
 }
 
 function checkLogin() {
@@ -260,5 +264,26 @@ function saveEdit() {
     .catch(error => {
         console.error('Error updating employee data:', error);
         alert(`Error updating employee data: ${error.message}`);
+    });
+}
+
+function deleteEmployee() {
+    const userId = document.getElementById('edit-user-id').value;
+
+    fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(`Server error: ${err.detail}`);
+            });
+        }
+        document.getElementById('edit-form-container').style.display = 'none';
+        fetchAttendanceData();
+    })
+    .catch(error => {
+        console.error('Error deleting employee:', error);
+        alert(`Error deleting employee: ${error.message}`);
     });
 }
