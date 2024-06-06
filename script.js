@@ -286,4 +286,28 @@ function deleteEmployee() {
         console.error('Error deleting employee:', error);
         alert(`Error deleting employee: ${error.message}`);
     });
+    function deleteEmployee() {
+    const userId = document.getElementById('edit-user-id').value;
+
+    fetch(`http://0.0.0.0:8080/api/employees/${userId}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(`Server error: ${err.detail}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById('edit-form-container').style.display = 'none';
+        fetchAttendanceData();
+    })
+    .catch(error => {
+        console.error('Error deleting employee:', error);
+        alert(`Error deleting employee: ${error.message}`);
+    });
+}
+
 }
