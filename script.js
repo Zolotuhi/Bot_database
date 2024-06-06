@@ -65,15 +65,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Set initial language
     setLanguage(currentLanguage);
 
-    // Check if user is already logged in
-    if (localStorage.getItem('username') && localStorage.getItem('password')) {
-        document.getElementById('username').value = localStorage.getItem('username');
-        document.getElementById('password').value = localStorage.getItem('password');
-        document.getElementById('remember-me').checked = true;
-    }
-
-    checkLogin();
-
     // Add event listeners for language buttons
     document.getElementById('btn-en').addEventListener('click', function() {
         setLanguage('en');
@@ -112,6 +103,14 @@ function setLanguage(language) {
     document.getElementById('main-title').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
+
+    document.querySelector('label[for="edit-username"]').textContent = translations[language].username + ":";
+    document.querySelector('label[for="edit-present"]').textContent = translations[language].present + ":";
+    document.querySelector('label[for="edit-location-lat"]').textContent = translations[language].latitude + ":";
+    document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
+    document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
+    document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
+    document.querySelector('label[for="edit-absences"]').textContent = translations[language].absences + ":";
 }
 
 function checkLogin() {
@@ -129,18 +128,10 @@ function checkLogin() {
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const rememberMe = document.getElementById('remember-me').checked;
 
     if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("preferredLanguage", currentLanguage); // Save selected language
-        if (rememberMe) {
-            localStorage.setItem('username', username);
-            localStorage.setItem('password', password);
-        } else {
-            localStorage.removeItem('username');
-            localStorage.removeItem('password');
-        }
         checkLogin();
     } else {
         alert("Invalid credentials");
@@ -149,8 +140,6 @@ function login() {
 
 function logout() {
     localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem('username');
-    localStorage.removeItem('password');
     checkLogin();
 }
 
@@ -209,6 +198,7 @@ function editEmployee(userId, username, present, lat, lon, arrivalTime, departur
     document.getElementById('edit-departure-time').value = departureTime;
     document.getElementById('edit-absences').value = absences;
     document.getElementById('edit-form-container').style.display = 'block';
+    setEditFormLanguage(currentLanguage); // Apply selected language to edit form
 }
 
 function saveEdit() {
@@ -260,3 +250,14 @@ function saveEdit() {
         alert(`Error updating employee data: ${error.message}`);
     });
 }
+
+function setEditFormLanguage(language) {
+    document.querySelector('label[for="edit-username"]').textContent = translations[language].username + ":";
+    document.querySelector('label[for="edit-present"]').textContent = translations[language].present + ":";
+    document.querySelector('label[for="edit-location-lat"]').textContent = translations[language].latitude + ":";
+    document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
+    document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
+    document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
+    document.querySelector('label[for="edit-absences"]').textContent = translations[language].absences + ":";
+}
+
