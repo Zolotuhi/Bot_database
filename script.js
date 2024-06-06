@@ -4,6 +4,9 @@ const translations = {
         username: "Username",
         arrivalTime: "Arrival Time",
         departureTime: "Departure Time",
+        edit: "Edit",
+        editEmployee: "Edit Employee",
+        save: "Save",
         present: "Present",
         latitude: "Latitude",
         longitude: "Longitude",
@@ -13,9 +16,6 @@ const translations = {
         password: "Password",
         rememberMe: "Remember me",
         logout: "Logout",
-        editEmployee: "Edit Employee",
-        save: "Save",
-        delete: "Delete",
         searchPlaceholder: "Search by username..."
     },
     ru: {
@@ -23,6 +23,9 @@ const translations = {
         username: "Имя пользователя",
         arrivalTime: "Время прибытия",
         departureTime: "Время ухода",
+        edit: "Редактировать",
+        editEmployee: "Редактировать сотрудника",
+        save: "Сохранить",
         present: "Присутствие",
         latitude: "Широта",
         longitude: "Долгота",
@@ -32,9 +35,6 @@ const translations = {
         password: "Пароль",
         rememberMe: "Запомнить меня",
         logout: "Выйти",
-        editEmployee: "Редактировать сотрудника",
-        save: "Сохранить",
-        delete: "Удалить",
         searchPlaceholder: "Поиск по имени пользователя..."
     },
     kz: {
@@ -42,6 +42,9 @@ const translations = {
         username: "Пайдаланушы аты",
         arrivalTime: "Келу уақыты",
         departureTime: "Кету уақыты",
+        edit: "Өңдеу",
+        editEmployee: "Қызметкерді өңдеу",
+        save: "Сақтау",
         present: "Қатысу",
         latitude: "Ендік",
         longitude: "Бойлық",
@@ -51,9 +54,6 @@ const translations = {
         password: "Құпия сөз",
         rememberMe: "Мені есте сақта",
         logout: "Шығу",
-        editEmployee: "Қызметкерді өңдеу",
-        save: "Сақтау",
-        delete: "Жою",
         searchPlaceholder: "Пайдаланушы аты бойынша іздеу..."
     }
 };
@@ -84,6 +84,14 @@ document.addEventListener("DOMContentLoaded", function() {
         this.classList.toggle('fa-eye-slash');
     });
 
+    // Load remember me state
+    const rememberMe = localStorage.getItem('rememberMe') === 'true';
+    document.getElementById('remember-me').checked = rememberMe;
+    if (rememberMe) {
+        document.getElementById('username').value = localStorage.getItem('username') || '';
+        document.getElementById('password').value = localStorage.getItem('password') || '';
+    }
+
     // Add event listener for logout button
     document.getElementById('logoutButton').addEventListener('click', function() {
         logout();
@@ -105,12 +113,6 @@ function setLanguage(language) {
     document.getElementById('main-title').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
-    document.getElementById('delete-button').textContent = translations[language].delete;
-
-    // Обновление данных при смене языка
-    if (attendanceData.length > 0) {
-        displayAttendanceData(attendanceData);
-    }
 }
 
 function checkLogin() {
@@ -128,10 +130,20 @@ function checkLogin() {
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const rememberMe = document.getElementById('remember-me').checked;
 
     if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("preferredLanguage", currentLanguage); // Save selected language
+        if (rememberMe) {
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+            localStorage.setItem('rememberMe', true);
+        } else {
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+            localStorage.removeItem('rememberMe');
+        }
         checkLogin();
     } else {
         alert("Invalid credentials");
@@ -140,6 +152,9 @@ function login() {
 
 function logout() {
     localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem('username');
+    localStorage.removeItem('password');
+    localStorage.removeItem('rememberMe');
     checkLogin();
 }
 
@@ -151,14 +166,6 @@ function fetchAttendanceData() {
             displayAttendanceData(data);
         })
         .catch(error => console.error('Error fetching attendance data:', error));
-}
-
-function filterAttendanceData() {
-    const searchInput = document.getElementById('search-input').value.toLowerCase();
-    const filteredData = attendanceData.filter(employee => 
-        employee[1].toLowerCase().includes(searchInput)
-    );
-    displayAttendanceData(filteredData);
 }
 
 function displayAttendanceData(data) {
@@ -260,29 +267,10 @@ function saveEdit() {
     });
 }
 
-function deleteEmployee() {
-    const userId = document.getElementById('edit-user-id').value;
-
-    fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => {
-                throw new Error(`Server error: ${err.detail}`);
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        document.getElementById('edit-form-container').style.display = 'none';
-        fetchAttendanceData();
-    })
-    .catch(error => {
-        console.error('Error deleting employee data:', error);
-        alert(`Error deleting employee data: ${error.message}`);
-    });
+function filterAttendanceData() {
+    const searchValue = document.getElementById('search-input').value.toLowerCase();
+    const filteredData = attendanceData.filter(employee =>
+        employee[1].toLowerCase().includes(searchValue)
+    );
+    displayAttendanceData(filteredData);
 }
