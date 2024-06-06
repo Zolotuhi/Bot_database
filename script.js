@@ -84,10 +84,20 @@ document.addEventListener("DOMContentLoaded", function() {
         this.classList.toggle('fa-eye-slash');
     });
 
+    // Load remember me state
+    const rememberMe = localStorage.getItem('rememberMe') === 'true';
+    document.getElementById('remember-me').checked = rememberMe;
+    if (rememberMe) {
+        document.getElementById('username').value = localStorage.getItem('username') || '';
+        document.getElementById('password').value = localStorage.getItem('password') || '';
+    }
+
     // Add event listener for logout button
     document.getElementById('logoutButton').addEventListener('click', function() {
         logout();
     });
+
+    checkLogin();
 });
 
 function setLanguage(language) {
@@ -120,10 +130,20 @@ function checkLogin() {
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const rememberMe = document.getElementById('remember-me').checked;
 
     if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("preferredLanguage", currentLanguage); // Save selected language
+        if (rememberMe) {
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+            localStorage.setItem('rememberMe', true);
+        } else {
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+            localStorage.removeItem('rememberMe');
+        }
         checkLogin();
     } else {
         alert("Invalid credentials");
@@ -132,6 +152,9 @@ function login() {
 
 function logout() {
     localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem('username');
+    localStorage.removeItem('password');
+    localStorage.removeItem('rememberMe');
     checkLogin();
 }
 
