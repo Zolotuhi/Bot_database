@@ -5,19 +5,15 @@ const translations = {
         arrivalTime: "Arrival Time",
         departureTime: "Departure Time",
         present: "Present",
-        latitude: "Latitude",
-        longitude: "Longitude",
         absences: "Absences",
         search: "Search",
         login: "Login",
         password: "Password",
         rememberMe: "Remember me",
         logout: "Logout",
-        editEmployee: "Edit Employee",
-        save: "Save",
-        delete: "Delete",
         searchPlaceholder: "Search by username...",
-        edit: "Edit"
+        edit: "Edit",
+        delete: "Delete"
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -25,19 +21,15 @@ const translations = {
         arrivalTime: "Время прибытия",
         departureTime: "Время ухода",
         present: "Присутствие",
-        latitude: "Широта",
-        longitude: "Долгота",
         absences: "Отсутствия",
         search: "Поиск",
         login: "Логин",
         password: "Пароль",
         rememberMe: "Запомнить меня",
         logout: "Выйти",
-        editEmployee: "Редактировать сотрудника",
-        save: "Сохранить",
-        delete: "Удалить",
         searchPlaceholder: "Поиск по имени пользователя...",
-        edit: "Редактировать"
+        edit: "Редактировать",
+        delete: "Удалить"
     },
     kz: {
         title: "Қатысу Трекері",
@@ -45,30 +37,24 @@ const translations = {
         arrivalTime: "Келу уақыты",
         departureTime: "Кету уақыты",
         present: "Қатысу",
-        latitude: "Ендік",
-        longitude: "Бойлық",
         absences: "Қатыспау",
         search: "Іздеу",
         login: "Кіру",
         password: "Құпия сөз",
         rememberMe: "Мені есте сақта",
         logout: "Шығу",
-        editEmployee: "Қызметкерді өңдеу",
-        save: "Сақтау",
-        delete: "Жою",
         searchPlaceholder: "Пайдаланушы аты бойынша іздеу...",
-        edit: "Өңдеу"
+        edit: "Өңдеу",
+        delete: "Жою"
     }
 };
 
-let currentLanguage = 'ru'; // Установите текущий язык по умолчанию
+let currentLanguage = 'ru';
 let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Set initial language
     setLanguage(currentLanguage);
 
-    // Add event listeners for language buttons
     document.getElementById('btn-en').addEventListener('click', function() {
         setLanguage('en');
     });
@@ -79,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function() {
         setLanguage('kz');
     });
 
-    // Add event listener for password toggle
     document.getElementById('toggle-password').addEventListener('click', function() {
         const passwordField = document.getElementById('password');
         const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -87,7 +72,6 @@ document.addEventListener("DOMContentLoaded", function() {
         this.classList.toggle('fa-eye-slash');
     });
 
-    // Add event listener for logout button
     document.getElementById('logoutButton').addEventListener('click', function() {
         logout();
     });
@@ -108,15 +92,13 @@ function setLanguage(language) {
     document.getElementById('main-title').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
-
-    displayAttendanceData(attendanceData); // Обновите таблицу с новыми переводами
 }
 
 function checkLogin() {
     if (localStorage.getItem("isAuthenticated") === "true") {
         document.getElementById('login-container').style.display = 'none';
         document.getElementById('main-container').style.display = 'block';
-        setLanguage(localStorage.getItem("preferredLanguage") || currentLanguage); // Apply selected language to main container
+        setLanguage(localStorage.getItem("preferredLanguage") || currentLanguage);
         fetchAttendanceData();
     } else {
         document.getElementById('login-container').style.display = 'block';
@@ -128,9 +110,9 @@ function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
+    if (username === "admin" && password === "admin123") {
         localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("preferredLanguage", currentLanguage); // Save selected language
+        localStorage.setItem("preferredLanguage", currentLanguage);
         checkLogin();
     } else {
         alert("Invalid credentials");
@@ -143,7 +125,7 @@ function logout() {
 }
 
 function fetchAttendanceData() {
-    fetch('https://zolotuhi.github.io/Bot_database/api/employees')
+    fetch('https://your-api-url/api/employees')
         .then(response => response.json())
         .then(data => {
             attendanceData = data;
@@ -175,13 +157,13 @@ function displayAttendanceData(data) {
     data.forEach(employee => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${employee[1]}</td>
-            <td>${employee[5]}</td>
-            <td>${employee[6]}</td>
-            <td><input type="checkbox" ${employee[2] ? "checked" : ""} disabled></td>
-            <td>${employee[7]}</td>
-            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}', '${employee[7]}')">${translations[currentLanguage].edit}</button></td>
-            <td><button class="delete-btn" style="background-color: #e74c3c;" onclick="deleteEmployee('${employee[0]}')">${translations[currentLanguage].delete}</button></td>
+            <td>${employee.username}</td>
+            <td>${employee.arrival_time}</td>
+            <td>${employee.departure_time}</td>
+            <td>${employee.present ? '✓' : ''}</td>
+            <td>${employee.absences}</td>
+            <td><button class="edit-btn" onclick="editEmployee('${employee.user_id}', '${employee.username}', ${employee.present}, ${employee.location_lat}, ${employee.location_lon}, '${employee.arrival_time}', '${employee.departure_time}', '${employee.absences}')">${translations[currentLanguage].edit}</button></td>
+            <td><button class="delete-btn" onclick="deleteEmployee('${employee.user_id}')">${translations[currentLanguage].delete}</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -228,7 +210,7 @@ function saveEdit() {
         absences: absences
     };
 
-    fetch(`https://zolotuhi.github.io/Bot_database/api/employees/${userId}`, {
+    fetch(`https://your-api-url/api/employees/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -254,7 +236,11 @@ function saveEdit() {
 }
 
 function deleteEmployee(userId) {
-    fetch(`https://zolotuhi.github.io/Bot_database/api/employees/${userId}`, {
+    if (!confirm("Are you sure you want to delete this employee?")) {
+        return;
+    }
+
+    fetch(`https://your-api-url/api/employees/${userId}`, {
         method: 'DELETE'
     })
     .then(response => {
@@ -272,9 +258,9 @@ function deleteEmployee(userId) {
 }
 
 function filterAttendanceData() {
-    const searchInput = document.getElementById('search-input').value.toLowerCase();
-    const filteredData = attendanceData.filter(employee => 
-        employee[1].toLowerCase().includes(searchInput)
+    const searchValue = document.getElementById('search-input').value.toLowerCase();
+    const filteredData = attendanceData.filter(employee =>
+        employee.username.toLowerCase().includes(searchValue)
     );
     displayAttendanceData(filteredData);
 }
