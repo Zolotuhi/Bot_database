@@ -16,7 +16,8 @@ const translations = {
         editEmployee: "Edit Employee",
         save: "Save",
         delete: "Delete",
-        searchPlaceholder: "Search by username..."
+        searchPlaceholder: "Search by username...",
+        edit: "Edit"
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -35,7 +36,8 @@ const translations = {
         editEmployee: "Редактировать сотрудника",
         save: "Сохранить",
         delete: "Удалить",
-        searchPlaceholder: "Поиск по имени пользователя..."
+        searchPlaceholder: "Поиск по имени пользователя...",
+        edit: "Редактировать"
     },
     kz: {
         title: "Қатысу Трекері",
@@ -54,11 +56,12 @@ const translations = {
         editEmployee: "Қызметкерді өңдеу",
         save: "Сақтау",
         delete: "Жою",
-        searchPlaceholder: "Пайдаланушы аты бойынша іздеу..."
+        searchPlaceholder: "Пайдаланушы аты бойынша іздеу...",
+        edit: "Өңдеу"
     }
 };
 
-let currentLanguage = 'en';
+let currentLanguage = 'ru'; // Установите текущий язык по умолчанию
 let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -105,12 +108,8 @@ function setLanguage(language) {
     document.getElementById('main-title').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
-    document.getElementById('delete-button').textContent = translations[language].delete;
 
-    // Обновление данных при смене языка
-    if (attendanceData.length > 0) {
-        displayAttendanceData(attendanceData);
-    }
+    displayAttendanceData(attendanceData); // Обновите таблицу с новыми переводами
 }
 
 function checkLogin() {
@@ -144,21 +143,13 @@ function logout() {
 }
 
 function fetchAttendanceData() {
-    fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees')
+    fetch('https://zolotuhi.github.io/Bot_database/api/employees')
         .then(response => response.json())
         .then(data => {
             attendanceData = data;
             displayAttendanceData(data);
         })
         .catch(error => console.error('Error fetching attendance data:', error));
-}
-
-function filterAttendanceData() {
-    const searchInput = document.getElementById('search-input').value.toLowerCase();
-    const filteredData = attendanceData.filter(employee => 
-        employee[1].toLowerCase().includes(searchInput)
-    );
-    displayAttendanceData(filteredData);
 }
 
 function displayAttendanceData(data) {
@@ -177,6 +168,7 @@ function displayAttendanceData(data) {
             <th>${translations[currentLanguage].present}</th>
             <th>${translations[currentLanguage].absences}</th>
             <th>${translations[currentLanguage].edit}</th>
+            <th>${translations[currentLanguage].delete}</th>
         </tr>
     `;
 
@@ -189,6 +181,7 @@ function displayAttendanceData(data) {
             <td><input type="checkbox" ${employee[2] ? "checked" : ""} disabled></td>
             <td>${employee[7]}</td>
             <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}', '${employee[7]}')">${translations[currentLanguage].edit}</button></td>
+            <td><button class="delete-btn" style="background-color: #e74c3c;" onclick="deleteEmployee('${employee[0]}')">${translations[currentLanguage].delete}</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -235,7 +228,7 @@ function saveEdit() {
         absences: absences
     };
 
-    fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
+    fetch(`https://zolotuhi.github.io/Bot_database/api/employees/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -260,14 +253,9 @@ function saveEdit() {
     });
 }
 
-function deleteEmployee() {
-    const userId = document.getElementById('edit-user-id').value;
-
-    fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+function deleteEmployee(userId) {
+    fetch(`https://zolotuhi.github.io/Bot_database/api/employees/${userId}`, {
+        method: 'DELETE'
     })
     .then(response => {
         if (!response.ok) {
@@ -275,14 +263,18 @@ function deleteEmployee() {
                 throw new Error(`Server error: ${err.detail}`);
             });
         }
-        return response.json();
-    })
-    .then(data => {
-        document.getElementById('edit-form-container').style.display = 'none';
         fetchAttendanceData();
     })
     .catch(error => {
-        console.error('Error deleting employee data:', error);
-        alert(`Error deleting employee data: ${error.message}`);
+        console.error('Error deleting employee:', error);
+        alert(`Error deleting employee: ${error.message}`);
     });
+}
+
+function filterAttendanceData() {
+    const searchInput = document.getElementById('search-input').value.toLowerCase();
+    const filteredData = attendanceData.filter(employee => 
+        employee[1].toLowerCase().includes(searchInput)
+    );
+    displayAttendanceData(filteredData);
 }
