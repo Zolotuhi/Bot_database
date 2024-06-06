@@ -5,15 +5,18 @@ const translations = {
         arrivalTime: "Arrival Time",
         departureTime: "Departure Time",
         present: "Present",
+        latitude: "Latitude",
+        longitude: "Longitude",
         absences: "Absences",
         search: "Search",
         login: "Login",
         password: "Password",
         rememberMe: "Remember me",
         logout: "Logout",
-        searchPlaceholder: "Search by username...",
-        edit: "Edit",
-        delete: "Delete"
+        editEmployee: "Edit Employee",
+        save: "Save",
+        delete: "Delete",
+        searchPlaceholder: "Search by username..."
     },
     ru: {
         title: "Трекер Посещаемости",
@@ -21,15 +24,18 @@ const translations = {
         arrivalTime: "Время прибытия",
         departureTime: "Время ухода",
         present: "Присутствие",
+        latitude: "Широта",
+        longitude: "Долгота",
         absences: "Отсутствия",
         search: "Поиск",
         login: "Логин",
         password: "Пароль",
         rememberMe: "Запомнить меня",
         logout: "Выйти",
-        searchPlaceholder: "Поиск по имени пользователя...",
-        edit: "Редактировать",
-        delete: "Удалить"
+        editEmployee: "Редактировать сотрудника",
+        save: "Сохранить",
+        delete: "Удалить",
+        searchPlaceholder: "Поиск по имени пользователя..."
     },
     kz: {
         title: "Қатысу Трекері",
@@ -37,24 +43,29 @@ const translations = {
         arrivalTime: "Келу уақыты",
         departureTime: "Кету уақыты",
         present: "Қатысу",
+        latitude: "Ендік",
+        longitude: "Бойлық",
         absences: "Қатыспау",
         search: "Іздеу",
         login: "Кіру",
         password: "Құпия сөз",
         rememberMe: "Мені есте сақта",
         logout: "Шығу",
-        searchPlaceholder: "Пайдаланушы аты бойынша іздеу...",
-        edit: "Өңдеу",
-        delete: "Жою"
+        editEmployee: "Қызметкерді өңдеу",
+        save: "Сақтау",
+        delete: "Жою",
+        searchPlaceholder: "Пайдаланушы аты бойынша іздеу..."
     }
 };
 
-let currentLanguage = 'ru';
+let currentLanguage = 'en';
 let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
+    // Set initial language
     setLanguage(currentLanguage);
 
+    // Add event listeners for language buttons
     document.getElementById('btn-en').addEventListener('click', function() {
         setLanguage('en');
     });
@@ -65,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
         setLanguage('kz');
     });
 
+    // Add event listener for password toggle
     document.getElementById('toggle-password').addEventListener('click', function() {
         const passwordField = document.getElementById('password');
         const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -72,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function() {
         this.classList.toggle('fa-eye-slash');
     });
 
+    // Add event listener for logout button
     document.getElementById('logoutButton').addEventListener('click', function() {
         logout();
     });
@@ -92,13 +105,19 @@ function setLanguage(language) {
     document.getElementById('main-title').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
+    document.getElementById('delete-button').textContent = translations[language].delete;
+
+    // Обновление данных при смене языка
+    if (attendanceData.length > 0) {
+        displayAttendanceData(attendanceData);
+    }
 }
 
 function checkLogin() {
     if (localStorage.getItem("isAuthenticated") === "true") {
         document.getElementById('login-container').style.display = 'none';
         document.getElementById('main-container').style.display = 'block';
-        setLanguage(localStorage.getItem("preferredLanguage") || currentLanguage);
+        setLanguage(localStorage.getItem("preferredLanguage") || currentLanguage); // Apply selected language to main container
         fetchAttendanceData();
     } else {
         document.getElementById('login-container').style.display = 'block';
@@ -110,9 +129,9 @@ function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    if (username === "admin" && password === "admin123") {
+    if (username === "admin" && password === "admin123") { // Замените на свои логин и пароль
         localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("preferredLanguage", currentLanguage);
+        localStorage.setItem("preferredLanguage", currentLanguage); // Save selected language
         checkLogin();
     } else {
         alert("Invalid credentials");
@@ -125,13 +144,21 @@ function logout() {
 }
 
 function fetchAttendanceData() {
-    fetch('https://your-api-url/api/employees')
+    fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees')
         .then(response => response.json())
         .then(data => {
             attendanceData = data;
             displayAttendanceData(data);
         })
         .catch(error => console.error('Error fetching attendance data:', error));
+}
+
+function filterAttendanceData() {
+    const searchInput = document.getElementById('search-input').value.toLowerCase();
+    const filteredData = attendanceData.filter(employee => 
+        employee[1].toLowerCase().includes(searchInput)
+    );
+    displayAttendanceData(filteredData);
 }
 
 function displayAttendanceData(data) {
@@ -150,20 +177,18 @@ function displayAttendanceData(data) {
             <th>${translations[currentLanguage].present}</th>
             <th>${translations[currentLanguage].absences}</th>
             <th>${translations[currentLanguage].edit}</th>
-            <th>${translations[currentLanguage].delete}</th>
         </tr>
     `;
 
     data.forEach(employee => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${employee.username}</td>
-            <td>${employee.arrival_time}</td>
-            <td>${employee.departure_time}</td>
-            <td>${employee.present ? '✓' : ''}</td>
-            <td>${employee.absences}</td>
-            <td><button class="edit-btn" onclick="editEmployee('${employee.user_id}', '${employee.username}', ${employee.present}, ${employee.location_lat}, ${employee.location_lon}, '${employee.arrival_time}', '${employee.departure_time}', '${employee.absences}')">${translations[currentLanguage].edit}</button></td>
-            <td><button class="delete-btn" onclick="deleteEmployee('${employee.user_id}')">${translations[currentLanguage].delete}</button></td>
+            <td>${employee[1]}</td>
+            <td>${employee[5]}</td>
+            <td>${employee[6]}</td>
+            <td><input type="checkbox" ${employee[2] ? "checked" : ""} disabled></td>
+            <td>${employee[7]}</td>
+            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}', '${employee[7]}')">${translations[currentLanguage].edit}</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -210,7 +235,7 @@ function saveEdit() {
         absences: absences
     };
 
-    fetch(`https://your-api-url/api/employees/${userId}`, {
+    fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -235,13 +260,14 @@ function saveEdit() {
     });
 }
 
-function deleteEmployee(userId) {
-    if (!confirm("Are you sure you want to delete this employee?")) {
-        return;
-    }
+function deleteEmployee() {
+    const userId = document.getElementById('edit-user-id').value;
 
-    fetch(`https://your-api-url/api/employees/${userId}`, {
-        method: 'DELETE'
+    fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
     .then(response => {
         if (!response.ok) {
@@ -249,18 +275,14 @@ function deleteEmployee(userId) {
                 throw new Error(`Server error: ${err.detail}`);
             });
         }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById('edit-form-container').style.display = 'none';
         fetchAttendanceData();
     })
     .catch(error => {
-        console.error('Error deleting employee:', error);
-        alert(`Error deleting employee: ${error.message}`);
+        console.error('Error deleting employee data:', error);
+        alert(`Error deleting employee data: ${error.message}`);
     });
-}
-
-function filterAttendanceData() {
-    const searchValue = document.getElementById('search-input').value.toLowerCase();
-    const filteredData = attendanceData.filter(employee =>
-        employee.username.toLowerCase().includes(searchValue)
-    );
-    displayAttendanceData(filteredData);
 }
