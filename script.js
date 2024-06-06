@@ -84,19 +84,12 @@ document.addEventListener("DOMContentLoaded", function() {
         this.classList.toggle('fa-eye-slash');
     });
 
-    // Load remember me state
-    const rememberMe = localStorage.getItem('rememberMe') === 'true';
-    document.getElementById('remember-me').checked = rememberMe;
-    if (rememberMe) {
-        document.getElementById('username').value = localStorage.getItem('username') || '';
-        document.getElementById('password').value = localStorage.getItem('password') || '';
-    }
-
     // Add event listener for logout button
     document.getElementById('logoutButton').addEventListener('click', function() {
         logout();
     });
 
+    // Check login status
     checkLogin();
 });
 
@@ -124,6 +117,14 @@ function checkLogin() {
     } else {
         document.getElementById('login-container').style.display = 'block';
         document.getElementById('main-container').style.display = 'none';
+        // If credentials are saved, fill them in
+        const savedUsername = localStorage.getItem("savedUsername");
+        const savedPassword = localStorage.getItem("savedPassword");
+        if (savedUsername && savedPassword) {
+            document.getElementById('username').value = savedUsername;
+            document.getElementById('password').value = savedPassword;
+            document.getElementById('remember-me').checked = true;
+        }
     }
 }
 
@@ -136,13 +137,11 @@ function login() {
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("preferredLanguage", currentLanguage); // Save selected language
         if (rememberMe) {
-            localStorage.setItem('username', username);
-            localStorage.setItem('password', password);
-            localStorage.setItem('rememberMe', true);
+            localStorage.setItem("savedUsername", username);
+            localStorage.setItem("savedPassword", password);
         } else {
-            localStorage.removeItem('username');
-            localStorage.removeItem('password');
-            localStorage.removeItem('rememberMe');
+            localStorage.removeItem("savedUsername");
+            localStorage.removeItem("savedPassword");
         }
         checkLogin();
     } else {
@@ -152,9 +151,6 @@ function login() {
 
 function logout() {
     localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem('username');
-    localStorage.removeItem('password');
-    localStorage.removeItem('rememberMe');
     checkLogin();
 }
 
@@ -235,8 +231,8 @@ function saveEdit() {
     const data = {
         username: username,
         present: present,
-        location_lat: lat,
-        location_lon: lon,
+        location_lat: isNaN(lat) ? null : lat,
+        location_lon: isNaN(lon) ? null : lon,
         arrival_time: arrivalTime,
         departure_time: departureTime,
         absences: absences
@@ -265,12 +261,4 @@ function saveEdit() {
         console.error('Error updating employee data:', error);
         alert(`Error updating employee data: ${error.message}`);
     });
-}
-
-function filterAttendanceData() {
-    const searchValue = document.getElementById('search-input').value.toLowerCase();
-    const filteredData = attendanceData.filter(employee =>
-        employee[1].toLowerCase().includes(searchValue)
-    );
-    displayAttendanceData(filteredData);
 }
