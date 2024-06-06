@@ -103,14 +103,6 @@ function setLanguage(language) {
     document.getElementById('main-title').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
-
-    document.querySelector('label[for="edit-username"]').textContent = translations[language].username + ":";
-    document.querySelector('label[for="edit-present"]').textContent = translations[language].present + ":";
-    document.querySelector('label[for="edit-location-lat"]').textContent = translations[language].latitude + ":";
-    document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
-    document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
-    document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
-    document.querySelector('label[for="edit-absences"]').textContent = translations[language].absences + ":";
 }
 
 function checkLogin() {
@@ -167,6 +159,7 @@ function displayAttendanceData(data) {
             <th>${translations[currentLanguage].arrivalTime}</th>
             <th>${translations[currentLanguage].departureTime}</th>
             <th>${translations[currentLanguage].absences}</th>
+            <th>${translations[currentLanguage].present}</th>
             <th>${translations[currentLanguage].edit}</th>
         </tr>
     `;
@@ -178,6 +171,7 @@ function displayAttendanceData(data) {
             <td>${employee[5]}</td>
             <td>${employee[6]}</td>
             <td>${employee[7]}</td>
+            <td><input type="checkbox" ${employee[2] ? 'checked' : ''} disabled></td>
             <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}', '${employee[7]}')">${translations[currentLanguage].edit}</button></td>
         `;
         tbody.appendChild(row);
@@ -198,7 +192,6 @@ function editEmployee(userId, username, present, lat, lon, arrivalTime, departur
     document.getElementById('edit-departure-time').value = departureTime;
     document.getElementById('edit-absences').value = absences;
     document.getElementById('edit-form-container').style.display = 'block';
-    setEditFormLanguage(currentLanguage); // Apply selected language to edit form
 }
 
 function saveEdit() {
@@ -251,20 +244,10 @@ function saveEdit() {
     });
 }
 
-function setEditFormLanguage(language) {
-    document.querySelector('label[for="edit-username"]').textContent = translations[language].username + ":";
-    document.querySelector('label[for="edit-present"]').textContent = translations[language].present + ":";
-    document.querySelector('label[for="edit-location-lat"]').textContent = translations[language].latitude + ":";
-    document.querySelector('label[for="edit-location-lon"]').textContent = translations[language].longitude + ":";
-    document.querySelector('label[for="edit-arrival-time"]').textContent = translations[language].arrivalTime + ":";
-    document.querySelector('label[for="edit-departure-time"]').textContent = translations[language].departureTime + ":";
-    document.querySelector('label[for="edit-absences"]').textContent = translations[language].absences + ":";
-}
-
 function filterAttendanceData() {
-    const searchTerm = document.getElementById('search-input').value.toLowerCase();
-    const filteredData = attendanceData.filter(employee => 
-        employee[1].toLowerCase().includes(searchTerm)
+    const searchValue = document.getElementById('search-input').value.toLowerCase();
+    const filteredData = attendanceData.filter(employee =>
+        employee[1].toLowerCase().includes(searchValue)
     );
     displayAttendanceData(filteredData);
 }
