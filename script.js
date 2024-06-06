@@ -261,3 +261,10 @@ function setEditFormLanguage(language) {
     document.querySelector('label[for="edit-absences"]').textContent = translations[language].absences + ":";
 }
 
+function filterAttendanceData() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const filteredData = attendanceData.filter(employee => 
+        employee[1].toLowerCase().includes(searchTerm)
+    );
+    displayAttendanceData(filteredData);
+}
