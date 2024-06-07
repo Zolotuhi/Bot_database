@@ -184,6 +184,7 @@ function displayAttendanceData(data) {
             <th>${translations[currentLanguage].present}</th>
             <th>${translations[currentLanguage].absences}</th>
             <th>${translations[currentLanguage].edit}</th>
+            <th>${translations[currentLanguage].delete}</th>
         </tr>
     `;
 
@@ -196,6 +197,7 @@ function displayAttendanceData(data) {
             <td><input type="checkbox" ${employee[2] ? "checked" : ""} disabled></td>
             <td>${employee[7]}</td>
             <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}', '${employee[7]}')">${translations[currentLanguage].edit}</button></td>
+            <td><button class="delete-btn" onclick="deleteEmployee('${employee[0]}')">${translations[currentLanguage].delete}</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -267,9 +269,7 @@ function saveEdit() {
     });
 }
 
-function deleteEmployee() {
-    const userId = document.getElementById('edit-user-id').value;
-
+function deleteEmployee(userId) {
     fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
         method: 'DELETE'
     })
@@ -286,4 +286,10 @@ function deleteEmployee() {
         console.error('Error deleting employee:', error);
         alert(`Error deleting employee: ${error.message}`);
     });
+}
+
+function filterAttendanceData() {
+    const searchValue = document.getElementById('search-input').value.toLowerCase();
+    const filteredData = attendanceData.filter(employee => employee[1].toLowerCase().includes(searchValue));
+    displayAttendanceData(filteredData);
 }
