@@ -109,7 +109,6 @@ function setLanguage(language) {
     document.getElementById('main-title').textContent = translations[language].title;
     document.getElementById('edit-title').textContent = translations[language].editEmployee;
     document.getElementById('save-button').textContent = translations[language].save;
-    document.getElementById('delete-button').textContent = translations[language].delete;
 }
 
 function checkLogin() {
