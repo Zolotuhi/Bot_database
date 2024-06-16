@@ -158,10 +158,9 @@ function logout() {
 }
 
 function fetchAttendanceData() {
-    fetch('http://0.0.0.0:8080/api/employees')  // Убедитесь, что URL правильный
+    fetch('http://0.0.0.0:8080/api/employees')
         .then(response => response.json())
         .then(data => {
-            console.log("Fetched data: ", data);  // Добавим вывод данных в консоль для отладки
             attendanceData = data;
             displayAttendanceData(data);
         })
