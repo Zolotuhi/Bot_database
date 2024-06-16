@@ -61,7 +61,7 @@ const translations = {
     }
 };
 
-let currentLanguage = 'en';
+let currentLanguage = 'ru';  // Меняем язык на русский
 let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -158,7 +158,7 @@ function logout() {
 }
 
 function fetchAttendanceData() {
-    fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees')
+    fetch('http://0.0.0.0:8080/api/employees')  // Убедитесь, что URL правильный
         .then(response => response.json())
         .then(data => {
             attendanceData = data;
@@ -243,7 +243,7 @@ function saveEdit() {
         absences: absences
     };
 
-    fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
+    fetch(`http://0.0.0.0:8080/api/employees/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -269,7 +269,7 @@ function saveEdit() {
 }
 
 function deleteEmployee(userId) {
-    fetch(`https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/employees/${userId}`, {
+    fetch(`http://0.0.0.0:8080/api/employees/${userId}`, {
         method: 'DELETE'
     })
     .then(response => {
