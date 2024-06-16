@@ -61,7 +61,7 @@ const translations = {
     }
 };
 
-let currentLanguage = 'ru';  // Меняем язык на русский
+let currentLanguage = 'en';
 let attendanceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -158,7 +158,7 @@ function logout() {
 }
 
 function fetchAttendanceData() {
-    fetch('http://0.0.0.0:8080/api/employees')
+    fetch('https://your-api-url/api/employees')
         .then(response => response.json())
         .then(data => {
             attendanceData = data;
@@ -190,13 +190,13 @@ function displayAttendanceData(data) {
     data.forEach(employee => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${employee[1]}</td>
-            <td>${employee[5]}</td>
-            <td>${employee[6]}</td>
-            <td><input type="checkbox" ${employee[2] ? "checked" : ""} disabled></td>
-            <td>${employee[7]}</td>
-            <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}', '${employee[7]}')">${translations[currentLanguage].edit}</button></td>
-            <td><button class="delete-btn" onclick="deleteEmployee('${employee[0]}')">${translations[currentLanguage].delete}</button></td>
+            <td>${employee.username}</td>
+            <td>${employee.arrival_time}</td>
+            <td>${employee.departure_time}</td>
+            <td><input type="checkbox" ${employee.present ? "checked" : ""} disabled></td>
+            <td>${employee.absences}</td>
+            <td><button class="edit-btn" onclick="editEmployee('${employee.user_id}', '${employee.username}', ${employee.present}, ${employee.location_lat}, ${employee.location_lon}, '${employee.arrival_time}', '${employee.departure_time}', '${employee.absences}')">${translations[currentLanguage].edit}</button></td>
+            <td><button class="delete-btn" onclick="deleteEmployee('${employee.user_id}')">${translations[currentLanguage].delete}</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -243,7 +243,7 @@ function saveEdit() {
         absences: absences
     };
 
-    fetch(`http://0.0.0.0:8080/api/employees/${userId}`, {
+    fetch(`https://your-api-url/api/employees/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -269,7 +269,7 @@ function saveEdit() {
 }
 
 function deleteEmployee(userId) {
-    fetch(`http://0.0.0.0:8080/api/employees/${userId}`, {
+    fetch(`https://your-api-url/api/employees/${userId}`, {
         method: 'DELETE'
     })
     .then(response => {
@@ -289,6 +289,6 @@ function deleteEmployee(userId) {
 
 function filterAttendanceData() {
     const searchValue = document.getElementById('search-input').value.toLowerCase();
-    const filteredData = attendanceData.filter(employee => employee[1].toLowerCase().includes(searchValue));
+    const filteredData = attendanceData.filter(employee => employee.username.toLowerCase().includes(searchValue));
     displayAttendanceData(filteredData);
 }
