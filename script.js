@@ -63,7 +63,6 @@ const translations = {
 
 let currentLanguage = 'en';
 let attendanceData = [];
-let absenceData = [];
 
 document.addEventListener("DOMContentLoaded", function() {
     // Set initial language
@@ -118,7 +117,6 @@ function checkLogin() {
         document.getElementById('main-container').style.display = 'block';
         setLanguage(localStorage.getItem("preferredLanguage") || currentLanguage); // Apply selected language to main container
         fetchAttendanceData();
-        fetchAbsenceData(); // Fetch absence data after login
     } else {
         document.getElementById('login-container').style.display = 'block';
         document.getElementById('main-container').style.display = 'none';
@@ -169,16 +167,6 @@ function fetchAttendanceData() {
         .catch(error => console.error('Error fetching attendance data:', error));
 }
 
-function fetchAbsenceData() {
-    fetch('https://5b6389b0-984f-4896-abbd-bae6987a3853-00-nta4awm7pbls.sisko.replit.dev:8080/api/absences')
-        .then(response => response.json())
-        .then(data => {
-            absenceData = data;
-            displayAbsenceData(data);
-        })
-        .catch(error => console.error('Error fetching absence data:', error));
-}
-
 function displayAttendanceData(data) {
     const container = document.getElementById('attendance-container');
     container.innerHTML = '';
@@ -201,45 +189,15 @@ function displayAttendanceData(data) {
 
     data.forEach(employee => {
         const row = document.createElement('tr');
+        const presentText = employee[2] ? "Да" : "Нет";
         row.innerHTML = `
             <td>${employee[1]}</td>
             <td>${employee[5]}</td>
             <td>${employee[6]}</td>
-            <td>${employee[2] ? "Да" : "Нет"}</td>
+            <td>${presentText}</td>
             <td>${employee[7]}</td>
             <td><button class="edit-btn" onclick="editEmployee('${employee[0]}', '${employee[1]}', ${employee[2]}, ${employee[3]}, ${employee[4]}, '${employee[5]}', '${employee[6]}', '${employee[7]}')">${translations[currentLanguage].edit}</button></td>
             <td><button class="delete-btn" onclick="deleteEmployee('${employee[0]}')">${translations[currentLanguage].delete}</button></td>
-        `;
-        tbody.appendChild(row);
-    });
-
-    table.appendChild(thead);
-    table.appendChild(tbody);
-    container.appendChild(table);
-}
-
-function displayAbsenceData(data) {
-    const container = document.getElementById('absence-container');
-    container.innerHTML = '';
-
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
-
-    thead.innerHTML = `
-        <tr>
-            <th>${translations[currentLanguage].username}</th>
-            <th>${translations[currentLanguage].date}</th>
-            <th>${translations[currentLanguage].reason}</th>
-        </tr>
-    `;
-
-    data.forEach(absence => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${absence[0]}</td>
-            <td>${absence[1]}</td>
-            <td>${absence[2]}</td>
         `;
         tbody.appendChild(row);
     });
